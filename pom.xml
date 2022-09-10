@@ -25,6 +25,12 @@
     </dependency>
 
     <dependency>
+      <groupId>de.openkeyword</groupId>
+      <artifactId>autoit</artifactId>
+      <version>0.1.19</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
