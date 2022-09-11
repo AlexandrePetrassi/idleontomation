@@ -14,8 +14,10 @@ public class ImageExtensions {
     }
 
     public static Point getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, Rectangle searchArea) {
-        for (int y = (int) searchArea.getMinY(); y < searchArea.getMaxY(); y++) {
-            for (int x = (int) searchArea.getMinX(); x < searchArea.getMaxX(); x++) {
+        int maxX = Math.min((int)searchArea.getMaxX(), mainImage.getWidth() - subImage.getWidth());
+        int maxY = Math.min((int)searchArea.getMaxY(), mainImage.getHeight() - subImage.getHeight());
+        for (int y = (int) searchArea.getMinY(); y < maxY; y++) {
+            for (int x = (int) searchArea.getMinX(); x < maxX; x++) {
                 BufferedImage sub = mainImage.getSubimage(x, y, subImage.getWidth(), subImage.getHeight());
                 if (fastSimilarity(sub, subImage)) return new Point(x, y);
             }
