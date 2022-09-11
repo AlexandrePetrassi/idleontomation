@@ -1,4 +1,4 @@
-package org.example;
+package org.example.data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
