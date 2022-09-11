@@ -1,7 +1,9 @@
-package org.example;
+package org.example.automation;
 
 import autoitx4java.AutoItX;
 import com.jacob.com.LibraryLoader;
+import org.example.data.ConfigurationFactory;
+import org.example.data.ConfigurationPojo;
 
 import java.nio.file.Paths;
 
