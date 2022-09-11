@@ -1,4 +1,4 @@
-package org.example;
+package org.example.data;
 
 public class ConfigurationPojo {
     private AutoIt autoIt;
