@@ -1,8 +1,12 @@
 package org.example.automation;
 
 import autoitx4java.AutoItX;
+import org.example.graphics.Screenshooter;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+
+import static org.example.graphics.ImageExtensions.*;
 
 public class AutoItXExtensions {
 
@@ -22,5 +26,13 @@ public class AutoItXExtensions {
                 autoItX.winGetPosWidth(windowName),
                 autoItX.winGetPosHeight(windowName)
         );
+    }
+
+    public static Rectangle getGameArea(AutoItX autoItX, String windowName, BufferedImage reference, Rectangle area) {
+        focusWindow(autoItX, windowName);
+        BufferedImage screenshot = Screenshooter.screenshot(getWindowRect(autoItX, windowName));
+        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot));
+        if (referenceArea == null) return null;
+        return getEnclosingArea(referenceArea, area);
     }
 }
