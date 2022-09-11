@@ -61,4 +61,13 @@ public class ImageExtensions {
                 bufferedImage.getHeight() / 2
         );
     }
+
+    public static Rectangle getRectangle(BufferedImage bufferedImage) {
+        return new Rectangle(
+                0,
+                0,
+                bufferedImage.getWidth(),
+                bufferedImage.getHeight()
+        );
+    }
 }
