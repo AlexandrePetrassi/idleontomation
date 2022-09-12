@@ -35,4 +35,11 @@ public class AutoItXExtensions {
         if (referenceArea == null) return null;
         return getEnclosingArea(referenceArea, area);
     }
+
+    public static void click(AutoItX autoItX, int x, int y) {
+        autoItX.mouseMove(x, y, 0);
+        autoItX.mouseDown("left");
+        autoItX.mouseUp("left");
+        autoItX.sleep(1);
+    }
 }
