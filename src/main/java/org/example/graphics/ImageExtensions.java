@@ -37,7 +37,7 @@ public class ImageExtensions {
                 .allMatch(index -> getPixel(base, index).equals(getPixel(other, index)));
     }
 
-    private static Color getPixel(BufferedImage image, int index) {
+    public static Color getPixel(BufferedImage image, int index) {
         return new Color(image.getRGB(index % image.getWidth(), index / image.getWidth()), false);
     }
 
