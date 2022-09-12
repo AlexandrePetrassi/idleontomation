@@ -34,7 +34,7 @@ public class ImageExtensions {
                 .iterate(initial, x -> (x + 2) % size)
                 .limit(iterations)
                 .filter(index -> !getPixel(other, index).equals(Color.MAGENTA))
-                .allMatch(index -> getPixel(base, index).equals(getPixel(other, index)));
+                .allMatch(index -> matchPixel(getPixel(base, index), getPixel(other, index), 0));
     }
 
     public static boolean matchPixel(Color a, Color b, int limit) {
