@@ -37,6 +37,14 @@ public class ImageExtensions {
                 .allMatch(index -> getPixel(base, index).equals(getPixel(other, index)));
     }
 
+    public static boolean matchPixel(Color a, Color b, int limit) {
+        int red = Math.abs(a.getRed() - b.getRed());
+        int blue = Math.abs(a.getBlue() - b.getBlue());
+        int green = Math.abs(a.getGreen() - b.getGreen());
+        int medium = (red + blue + green) / 3;
+        return (medium <= 1 + limit) && (medium >= 1 - limit);
+    }
+
     public static Color getPixel(BufferedImage image, int index) {
         return new Color(image.getRGB(index % image.getWidth(), index / image.getWidth()), false);
     }
