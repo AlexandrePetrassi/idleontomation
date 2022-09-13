@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import static org.example.automation.AutoItXExtensions.click;
+import static org.example.automation.AutoItXExtensions.*;
 import static org.example.graphics.ImageExtensions.*;
 
 public class ChopMiniGame {
@@ -28,6 +28,14 @@ public class ChopMiniGame {
 
     private ChopMiniGame() {
         throw new IllegalStateException("Utility Class");
+    }
+
+    public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName) {
+        focusWindow(autoItX, windowName);
+        Rectangle windowRect = getWindowRect(autoItX, windowName);
+        BufferedImage screenshot = Screenshooter.screenshot(windowRect);
+        Rectangle result = findBiggerMinigameArea(screenshot);
+        return new Rectangle(windowRect.x + result.x, windowRect.y + result.y, result.width, result.height);
     }
 
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot) {
