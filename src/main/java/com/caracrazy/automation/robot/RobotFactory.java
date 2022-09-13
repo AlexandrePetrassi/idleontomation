@@ -6,9 +6,6 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class RobotFactory {
 
-    public static final String ROBOT_INSTANTIATION_ERROR =
-            "Problems while instantiate robot";
-
     private static Robot cachedRobot;
 
     private RobotFactory() {
@@ -19,7 +16,7 @@ public class RobotFactory {
         try {
             return new Robot();
         } catch (AWTException e) {
-            throw new IllegalStateException(ROBOT_INSTANTIATION_ERROR, e);
+            throw new IllegalStateException(messages().getErrorRobotInstantiation(), e);
         }
     }
 
