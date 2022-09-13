@@ -2,3 +2,18 @@ autoItX:
   dll:
     name: "jacob-1.14.3-x64.dll"
     directory: "C:\\Program Files (x86)\\AutoIt3\\AutoItX"
+chopMiniGame:
+  appName: "Legends Of Idleon"
+  frameReference: "chop.bmp"
+  cursorReference: "leaf.bmp"
+  forceExitKey: 1
+  messages:
+    frameNotFound: "Chop mini game not found"
+    cursorNotFound: "Leaf image not found"
+    forceExit: "Interrupted by ESC Key"
+    onClick: "Click"
+  colors:
+    - "122, 206, 39"
+    - "38, 138, 20"
+    - "252, 255, 122"
+    - "232, 168, 41"
