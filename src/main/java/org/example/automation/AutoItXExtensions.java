@@ -31,7 +31,7 @@ public class AutoItXExtensions {
     public static Rectangle getGameArea(AutoItX autoItX, String windowName, BufferedImage reference, Rectangle area) {
         focusWindow(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(getWindowRect(autoItX, windowName));
-        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot));
+        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
         if (referenceArea == null) return null;
         return getEnclosingArea(referenceArea, area);
     }

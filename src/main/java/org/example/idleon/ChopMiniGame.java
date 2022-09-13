@@ -55,7 +55,7 @@ public class ChopMiniGame {
 
     public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Rectangle offset, Color[] colors) {
         Rectangle rect = ImageExtensions.getRectangle(screenshot);
-        Point leafPoint = getSubImagePosition(screenshot, reference, rect);
+        Point leafPoint = getSubImagePosition(screenshot, reference, rect, 48);
         if (leafPoint == null) {
             System.out.println("Reference image not found");
             return Optional.empty();
