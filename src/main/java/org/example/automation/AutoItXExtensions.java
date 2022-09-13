@@ -40,6 +40,6 @@ public class AutoItXExtensions {
         autoItX.mouseMove(x, y, 0);
         autoItX.mouseDown("left");
         autoItX.mouseUp("left");
-        autoItX.sleep(1);
+        autoItX.sleep(50);
     }
 }
