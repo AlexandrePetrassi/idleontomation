@@ -30,4 +30,9 @@ public class ImageLoader {
             throw new IllegalStateException(String.format(FAIL_TO_READ_IMAGE, filename), e);
         }
     }
+
+    public static BufferedImage loadResource(String filename) {
+        if(filename.startsWith("/")) return load(filename);
+        return load("/" + filename);
+    }
 }
