@@ -2,31 +2,22 @@ package org.example.automation;
 
 import autoitx4java.AutoItX;
 import com.jacob.com.LibraryLoader;
-import org.example.data.ConfigurationFactory;
 import org.example.data.ConfigurationPojo;
 
 import java.nio.file.Paths;
 
 public class AutoItXFactory {
 
-    private static AutoItX cache = null;
-
-    private static ConfigurationPojo config = ConfigurationFactory.create();
-
-    public static void setConfig(ConfigurationPojo config) {
-        AutoItXFactory.config = config;
-    }
-
     private AutoItXFactory() {
         throw new IllegalStateException("Utility class");
     }
 
-    private static String getDllPath() {
-        return config.getAutoIt().getDll().getDirectory();
+    private static String getDllPath(ConfigurationPojo.AutoItData config) {
+        return config.getDll().getDirectory();
     }
 
-    private static String getDllName() {
-        return config.getAutoIt().getDll().getName();
+    private static String getDllName(ConfigurationPojo.AutoItData config) {
+        return config.getDll().getName();
     }
 
     private static String getDllPath(String dllDirectory, String dllName) {
@@ -47,10 +38,7 @@ public class AutoItXFactory {
         return new AutoItX();
     }
 
-    public static AutoItX create() {
-        if (cache == null) {
-            cache = loadAutoIt(getDllPath(), getDllName());
-        }
-        return cache;
+    public static AutoItX create(ConfigurationPojo.AutoItData config) {
+        return loadAutoIt(getDllPath(config), getDllName(config));
     }
 }

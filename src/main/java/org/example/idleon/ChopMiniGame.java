@@ -2,7 +2,6 @@ package org.example.idleon;
 
 import autoitx4java.AutoItX;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import org.example.automation.AutoItXFactory;
 import org.example.automation.Keyboard;
 import org.example.graphics.ImageExtensions;
 import org.example.graphics.ImageLoader;
@@ -32,8 +31,7 @@ public class ChopMiniGame {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static void start() {
-        AutoItX autoItX = AutoItXFactory.create();
+    public static void start(AutoItX autoItX) {
         Rectangle gameArea = ChopMiniGame.findCriticalMinigameArea(autoItX, "Legends Of Idleon");
         BufferedImage leaf = ImageLoader.loadResource("leaf.bmp");
         keepClicking(autoItX, leaf, gameArea);
