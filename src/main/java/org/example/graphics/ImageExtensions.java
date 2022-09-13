@@ -106,13 +106,4 @@ public class ImageExtensions {
                 bufferedImage.getHeight()
         );
     }
-
-    public static Rectangle getEnclosingArea(Point point, Rectangle area) {
-        return new Rectangle(
-                point.x + area.x,
-                point.y + area.y,
-                area.width - area.x,
-                area.height - area.y
-        );
-    }
 }

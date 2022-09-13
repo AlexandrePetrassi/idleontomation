@@ -17,6 +17,7 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 import static org.example.graphics.ImageExtensions.*;
+import static org.example.idleon.ChopMiniGame.getEnclosingArea;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

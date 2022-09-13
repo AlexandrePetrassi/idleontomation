@@ -16,7 +16,8 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.example.automation.AutoItXExtensions.*;
-import static org.example.graphics.ImageExtensions.*;
+import static org.example.graphics.ImageExtensions.getRectangle;
+import static org.example.graphics.ImageExtensions.getSubImagePosition;
 
 public class ChopMiniGame {
 
@@ -52,6 +53,15 @@ public class ChopMiniGame {
         Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
         if (referenceArea == null) throw new IllegalStateException("Chop mini game not found");
         return getEnclosingArea(referenceArea, area);
+    }
+
+    public static Rectangle getEnclosingArea(Point point, Rectangle area) {
+        return new Rectangle(
+                point.x + area.x,
+                point.y + area.y,
+                area.width - area.x,
+                area.height - area.y
+        );
     }
 
     public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea) {
