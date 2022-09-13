@@ -39,7 +39,7 @@ public class ChopMiniGame {
         BufferedImage reference = ImageLoader.loadResource(config.getFrameReference());
         Rectangle area = new Rectangle(10, -11, 240, 15);
         Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, ImageExtensions.getRectangle(screenshot), 8);
-        if (referenceArea == null) throw new IllegalStateException(config.getMessages().getFrameNotFound());
+        if (referenceArea == null) throw new IllegalStateException(messages().getErrorFrameNotFound());
         return getEnclosingArea(referenceArea, area);
     }
 
@@ -57,12 +57,12 @@ public class ChopMiniGame {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
             if(Keyboard.isKeyPressed(config.getForceExitKey())) {
-                System.out.println(config.getMessages().getForceExit());
+                System.out.println(messages().getInfoForceExit());
                 return;
             } else if (!isGood.isPresent()){
-                System.out.println(config.getMessages().getCursorNotFound());
+                System.out.println(messages().getErrorCursorNotFound());
             } else if (Boolean.TRUE.equals(isGood.get())) {
-                System.out.println(config.getMessages().getOnClick());
+                System.out.println(messages().getInfoClick());
                 click(autoItX, gameArea.x, gameArea.y);
             } else {
                 autoItX.sleep(1);
