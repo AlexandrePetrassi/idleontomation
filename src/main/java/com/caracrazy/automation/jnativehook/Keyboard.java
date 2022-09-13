@@ -23,6 +23,7 @@ public class Keyboard implements NativeKeyListener {
     }
 
     public static void use(Runnable runnable) {
+        pressedKeys.clear();
         try {
             start();
             runnable.run();
