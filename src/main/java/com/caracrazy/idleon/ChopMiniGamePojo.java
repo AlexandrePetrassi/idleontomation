@@ -1,4 +1,4 @@
-package org.example.idleon;
+package com.caracrazy.idleon;
 
 import java.util.List;
 

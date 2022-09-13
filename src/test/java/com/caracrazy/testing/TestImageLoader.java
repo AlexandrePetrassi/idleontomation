@@ -1,4 +1,4 @@
-package org.example.testing;
+package com.caracrazy.testing;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

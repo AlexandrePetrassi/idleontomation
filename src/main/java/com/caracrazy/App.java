@@ -1,11 +1,11 @@
-package org.example;
+package com.caracrazy;
 
 import autoitx4java.AutoItX;
-import org.example.automation.AutoItXFactory;
-import org.example.automation.Keyboard;
-import org.example.configuration.ConfigurationFactory;
-import org.example.configuration.ConfigurationPojo;
-import org.example.idleon.ChopMiniGame;
+import com.caracrazy.automation.AutoItXFactory;
+import com.caracrazy.automation.Keyboard;
+import com.caracrazy.configuration.ConfigurationFactory;
+import com.caracrazy.configuration.ConfigurationPojo;
+import com.caracrazy.idleon.ChopMiniGame;
 
 public class App {
 

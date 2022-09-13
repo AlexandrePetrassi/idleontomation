@@ -1,11 +1,11 @@
-package org.example.graphics;
+package com.caracrazy.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
-import static org.example.graphics.ColorExtensions.averageColor;
-import static org.example.graphics.ColorExtensions.matchPixel;
+import static com.caracrazy.graphics.ColorExtensions.averageColor;
+import static com.caracrazy.graphics.ColorExtensions.matchPixel;
 
 public class ImageExtensions {
 

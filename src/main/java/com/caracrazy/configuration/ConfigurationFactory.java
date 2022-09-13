@@ -1,6 +1,6 @@
-package org.example.configuration;
+package com.caracrazy.configuration;
 
-import org.example.yaml.YamlLoader;
+import com.caracrazy.yaml.YamlLoader;
 
 public class ConfigurationFactory {
 

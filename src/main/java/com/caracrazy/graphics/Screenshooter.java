@@ -1,4 +1,4 @@
-package org.example.graphics;
+package com.caracrazy.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

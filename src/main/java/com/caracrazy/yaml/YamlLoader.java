@@ -1,4 +1,4 @@
-package org.example.yaml;
+package com.caracrazy.yaml;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

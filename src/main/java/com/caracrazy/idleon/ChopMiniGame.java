@@ -1,11 +1,11 @@
-package org.example.idleon;
+package com.caracrazy.idleon;
 
 import autoitx4java.AutoItX;
+import com.caracrazy.automation.Keyboard;
+import com.caracrazy.graphics.ImageExtensions;
+import com.caracrazy.graphics.ImageLoader;
+import com.caracrazy.graphics.Screenshooter;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import org.example.automation.Keyboard;
-import org.example.graphics.ImageExtensions;
-import org.example.graphics.ImageLoader;
-import org.example.graphics.Screenshooter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -14,9 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-import static org.example.automation.AutoItXExtensions.*;
-import static org.example.graphics.ImageExtensions.getRectangle;
-import static org.example.graphics.ImageExtensions.getSubImagePosition;
+import static com.caracrazy.automation.AutoItXExtensions.*;
 
 public class ChopMiniGame {
 
@@ -48,7 +46,7 @@ public class ChopMiniGame {
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot) {
         BufferedImage reference = ImageLoader.loadResource("chop.bmp");
         Rectangle area = new Rectangle(10, -11, 240, 15);
-        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
+        Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, ImageExtensions.getRectangle(screenshot), 8);
         if (referenceArea == null) throw new IllegalStateException("Chop mini game not found");
         return getEnclosingArea(referenceArea, area);
     }
@@ -82,7 +80,7 @@ public class ChopMiniGame {
 
     public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Color[] colors) {
         Rectangle rect = ImageExtensions.getRectangle(screenshot);
-        Point leafPoint = getSubImagePosition(screenshot, reference, rect, 48);
+        Point leafPoint = ImageExtensions.getSubImagePosition(screenshot, reference, rect, 48);
         if (leafPoint == null) {
             System.out.println("Reference image not found");
             return Optional.empty();

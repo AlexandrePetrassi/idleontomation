@@ -1,4 +1,4 @@
-package org.example.automation;
+package com.caracrazy.automation;
 
 import autoitx4java.AutoItX;
 

@@ -1,7 +1,7 @@
-package org.example.configuration;
+package com.caracrazy.configuration;
 
-import org.example.automation.AutoItXPojo;
-import org.example.idleon.ChopMiniGamePojo;
+import com.caracrazy.automation.AutoItXPojo;
+import com.caracrazy.idleon.ChopMiniGamePojo;
 
 public class ConfigurationPojo {
 

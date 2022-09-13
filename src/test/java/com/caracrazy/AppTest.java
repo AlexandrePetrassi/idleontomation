@@ -1,8 +1,9 @@
-package org.example;
+package com.caracrazy;
 
-import org.example.graphics.ImageLoader;
-import org.example.idleon.ChopMiniGame;
-import org.example.testing.TestImageLoader;
+import com.caracrazy.graphics.ImageExtensions;
+import com.caracrazy.graphics.ImageLoader;
+import com.caracrazy.idleon.ChopMiniGame;
+import com.caracrazy.testing.TestImageLoader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -16,8 +17,6 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-import static org.example.graphics.ImageExtensions.*;
-import static org.example.idleon.ChopMiniGame.getEnclosingArea;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -70,12 +69,12 @@ public class AppTest
         Rectangle area = new Rectangle(10, -11, 240, 15);
 
         // When
-        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
+        Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, ImageExtensions.getRectangle(screenshot), 8);
         if (referenceArea == null) Assert.fail();
-        Rectangle point = getEnclosingArea(referenceArea, area);
+        Rectangle point = ChopMiniGame.getEnclosingArea(referenceArea, area);
 
         // Then
         BufferedImage shot = screenshot.getSubimage(point.x, point.y, point.width, point.height);
-        assertTrue(similar(shot, expected, 1));
+        assertTrue(ImageExtensions.similar(shot, expected, 1));
     }
 }

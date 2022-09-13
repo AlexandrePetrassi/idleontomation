@@ -1,4 +1,4 @@
-package org.example.automation;
+package com.caracrazy.automation;
 
 public class AutoItXPojo {
     private Dll dll;
