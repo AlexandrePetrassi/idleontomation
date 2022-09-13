@@ -1,7 +1,7 @@
 package com.caracrazy.idleon;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.jnativehook.Keyboard;
+import com.caracrazy.automation.jnativehook.KeyboardListener;
 import com.caracrazy.automation.robot.Screenshooter;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
@@ -56,7 +56,7 @@ public class ChopMiniGame {
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
-            if(Keyboard.isKeyPressed(config.getForceExitKey())) {
+            if(KeyboardListener.isKeyPressed(config.getForceExitKey())) {
                 System.out.println(messages().getInfoForceExit());
                 return;
             } else if (!isGood.isPresent()){

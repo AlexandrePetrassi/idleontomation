@@ -10,11 +10,11 @@ import java.util.Map;
 
 import static com.caracrazy.localization.Messages.messages;
 
-public class Keyboard implements NativeKeyListener {
+public class KeyboardListener implements NativeKeyListener {
 
     private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
 
-    private Keyboard() {
+    private KeyboardListener() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
