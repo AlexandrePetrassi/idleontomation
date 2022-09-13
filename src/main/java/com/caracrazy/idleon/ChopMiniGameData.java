@@ -14,7 +14,6 @@ public class ChopMiniGameData {
     private String frameReference;
     private String cursorReference;
     private int forceExitKey;
-    private Messages messages;
     private List<String> colors;
 
     public String getAppName() {
@@ -33,10 +32,6 @@ public class ChopMiniGameData {
         return forceExitKey;
     }
 
-    public Messages getMessages() {
-        return messages;
-    }
-
     @JsonProperty("targetColors")
     private List<String> getColors() {
         return colors;
@@ -53,29 +48,5 @@ public class ChopMiniGameData {
                     .collect(Collectors.toCollection(ArrayList::new));
         }
         return targetColors;
-    }
-
-    public static class Messages {
-
-        private String frameNotFound;
-        private String cursorNotFound;
-        private String forceExit;
-        private String onClick;
-
-        public String getFrameNotFound() {
-            return frameNotFound;
-        }
-
-        public String getCursorNotFound() {
-            return cursorNotFound;
-        }
-
-        public String getForceExit() {
-            return forceExit;
-        }
-
-        public String getOnClick() {
-            return onClick;
-        }
     }
 }

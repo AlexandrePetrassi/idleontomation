@@ -7,11 +7,6 @@ chopMiniGame:
   frameReference: "chop.bmp"
   cursorReference: "leaf.bmp"
   forceExitKey: 1
-  messages:
-    frameNotFound: "Chop mini game not found"
-    cursorNotFound: "Leaf image not found"
-    forceExit: "Interrupted by ESC Key"
-    onClick: "Click"
   targetColors:
     - "122, 206, 39"
     - "38, 138, 20"
