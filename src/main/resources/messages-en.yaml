@@ -4,5 +4,6 @@ errorNativeHookRegister: "There was a problem registering the keyboard native ho
 errorRobotInstantiation: "Problems while instantiating an \"awt.robot\"."
 errorFrameNotFound: "Chop mini game not found."
 errorCursorNotFound: "Leaf cursor image not found."
+errorImageNotSameSize: "The images are not the same size."
 infoForceExit: "Interrupted by ESC Key."
 infoClick: "Click."

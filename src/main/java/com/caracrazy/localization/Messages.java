@@ -12,6 +12,7 @@ public class Messages {
     private String errorRobotInstantiation = "em3";
     private String errorFrameNotFound = "em4";
     private String errorCursorNotFound = "em5";
+    private String errorImageNotSameSize = "em6";
     private String infoForceExit = "im1";
     private String infoClick = "im2";
 
@@ -45,5 +46,9 @@ public class Messages {
 
     public String getInfoClick() {
         return infoClick;
+    }
+
+    public String getErrorImageNotSameSize() {
+        return errorImageNotSameSize;
     }
 }

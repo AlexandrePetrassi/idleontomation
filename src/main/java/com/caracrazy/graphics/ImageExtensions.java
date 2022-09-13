@@ -10,8 +10,7 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class ImageExtensions {
 
-    private static final String ERROR_NOT_SAME_SIZE =
-            "Images are not same size: base(%d, %d) vs other(%d, %d)";
+    private static final String TEMPLATE_SIZE_ERROR = "(%d, %d) vs (%d, %d)";
 
     private ImageExtensions() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
@@ -89,8 +88,8 @@ public class ImageExtensions {
 
     public static void requireSameSize(BufferedImage base, BufferedImage other) {
         if (base.getWidth() != other.getWidth() || base.getHeight() != other.getHeight()) {
-            throw new IllegalArgumentException(String.format(
-                    ERROR_NOT_SAME_SIZE,
+            throw new IllegalArgumentException(messages().getErrorImageNotSameSize() + String.format(
+                    TEMPLATE_SIZE_ERROR,
                     base.getWidth(),
                     base.getHeight(),
                     other.getWidth(),

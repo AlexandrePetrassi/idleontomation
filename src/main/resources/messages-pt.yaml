@@ -4,5 +4,6 @@ errorNativeHookRegister: "Houve um problema ao registrar o Native Hook do teclad
 errorRobotInstantiation: "Problemas ao instanciar \"um awt.robot\"."
 errorFrameNotFound: "Mini Game de cortar árvores não encontrado."
 errorCursorNotFound: "Imagem do cursor de folha não encontrado."
+errorImageNotSameSize: "As imagens não são do mesmo tamanho."
 infoForceExit: "Interrompido devido a tecla ESC ser pressionada."
 infoClick: "Click."
