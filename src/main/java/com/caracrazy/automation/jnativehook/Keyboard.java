@@ -12,12 +12,6 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class Keyboard implements NativeKeyListener {
 
-    public static final String UNREGISTERING_ERROR =
-            "There was a problem unregistering the native hook.";
-
-    public static final String REGISTERING_ERROR =
-            "There was a problem registering the native hook.";
-
     private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
 
     private Keyboard() {
@@ -75,7 +69,7 @@ public class Keyboard implements NativeKeyListener {
         try {
             GlobalScreen.unregisterNativeHook();
         } catch (NativeHookException e) {
-            throw new IllegalStateException(UNREGISTERING_ERROR, e);
+            throw new IllegalStateException(messages().getErrorNativeHookUnregister(), e);
         }
     }
 
@@ -87,7 +81,7 @@ public class Keyboard implements NativeKeyListener {
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
-            throw new IllegalStateException(REGISTERING_ERROR, e);
+            throw new IllegalStateException(messages().getErrorNativeHookRegister(), e);
         }
     }
 }
