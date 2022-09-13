@@ -9,11 +9,7 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class ImageLoader {
 
-    private static final String FAIL_TO_READ_IMAGE =
-            "Failed to read image from file \"%s\"";
-
-    private static final String FILE_NOT_FOUND =
-            "File \"%s\" not found";
+    public static final String TEMPLATE_ERROR = "%s: %s";
 
     private ImageLoader() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
@@ -21,7 +17,10 @@ public class ImageLoader {
 
     private static URL getUrl(String filename) {
         URL url = ImageLoader.class.getResource(filename);
-        if (url == null) throw new IllegalStateException(String.format(FILE_NOT_FOUND, filename));
+        if (url == null) {
+            String message = String.format(TEMPLATE_ERROR, messages().getErrorImageLoad(), filename);
+            throw new IllegalStateException(message);
+        }
         return url;
     }
 
@@ -29,7 +28,8 @@ public class ImageLoader {
         try {
             return ImageIO.read(getUrl(filename));
         } catch (IOException e) {
-            throw new IllegalStateException(String.format(FAIL_TO_READ_IMAGE, filename), e);
+            String message = String.format(TEMPLATE_ERROR, messages().getErrorImageRead(), filename);
+            throw new IllegalStateException(message, e);
         }
     }
 

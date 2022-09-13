@@ -13,6 +13,8 @@ public class Messages {
     private String errorFrameNotFound = "em4";
     private String errorCursorNotFound = "em5";
     private String errorImageNotSameSize = "em6";
+    private String errorImageRead = "em7";
+    private String errorImageLoad = "em8";
     private String infoForceExit = "im1";
     private String infoClick = "im2";
 
@@ -50,5 +52,13 @@ public class Messages {
 
     public String getErrorImageNotSameSize() {
         return errorImageNotSameSize;
+    }
+
+    public String getErrorImageRead() {
+        return errorImageRead;
+    }
+
+    public String getErrorImageLoad() {
+        return errorImageLoad;
     }
 }
