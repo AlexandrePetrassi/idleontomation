@@ -20,7 +20,6 @@ import static org.example.graphics.ImageExtensions.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(Theories.class)
 public class AppTest
 {
@@ -36,8 +35,7 @@ public class AppTest
             ImageLoader.loadResource("leaf.bmp");
 
     @Theory
-    public void shouldFindLeaf(final int index)
-    {
+    public void shouldFindLeaf(final int index) {
         // Given
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
         BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
@@ -50,8 +48,7 @@ public class AppTest
     }
 
     @Theory
-    public void shouldNotFindLeaf(final long index)
-    {
+    public void shouldNotFindLeaf(final long index) {
         // Given
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
         BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
@@ -65,18 +62,18 @@ public class AppTest
 
     @Test
     public void shouldFindTheCriticalAreaFromAFullScreenshot() {
-        // Dado
+        // Given
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame-fullscreen.png");
         BufferedImage reference = ImageLoader.loadResource("chop.bmp");
         BufferedImage expected = TestImageLoader.loadResource("asserts/chop-area-assert.png");
         Rectangle area = new Rectangle(10, -11, 240, 15);
 
-        // Quando
+        // When
         Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
         if (referenceArea == null) Assert.fail();
         Rectangle point = getEnclosingArea(referenceArea, area);
 
-        // Entao
+        // Then
         BufferedImage shot = screenshot.getSubimage(point.x, point.y, point.width, point.height);
         assertTrue(similar(shot, expected, 1));
     }
