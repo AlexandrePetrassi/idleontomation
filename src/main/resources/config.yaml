@@ -3,7 +3,7 @@ autoItX:
     name: "jacob-1.14.3-x64.dll"
     directory: "C:\\Program Files (x86)\\AutoIt3\\AutoItX"
 chopMiniGame:
-  appName: "Legends Of Idleon"
+  appName: "minigame-fullscreen"
   frameReference: "chop.bmp"
   cursorReference: "leaf.bmp"
   forceExitKey: 1
@@ -12,7 +12,7 @@ chopMiniGame:
     cursorNotFound: "Leaf image not found"
     forceExit: "Interrupted by ESC Key"
     onClick: "Click"
-  colors:
+  targetColors:
     - "122, 206, 39"
     - "38, 138, 20"
     - "252, 255, 122"

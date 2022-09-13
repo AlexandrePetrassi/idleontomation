@@ -1,9 +1,11 @@
 package com.caracrazy;
 
+import com.caracrazy.configuration.ConfigurationPojo;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
 import com.caracrazy.idleon.ChopMiniGame;
 import com.caracrazy.testing.TestImageLoader;
+import com.caracrazy.yaml.YamlLoader;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoints;
@@ -13,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -31,17 +34,21 @@ public class AppTest
     public static final long[] screenshots2 =
             LongStream.range(286, 338).toArray();
 
+    private static final ConfigurationPojo config =
+            YamlLoader.load(ConfigurationPojo.class, "config.yaml");
+
     public static final BufferedImage leaf =
-            ImageLoader.loadResource("leaf.bmp");
+            ImageLoader.loadResource(config.getChopMiniGame().getCursorReference());
 
     @Theory
     public void shouldFindLeaf(final int index) {
         // Given
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
         BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
+        Collection<Color> targetColors = config.getChopMiniGame().getTargetColors();
 
         // When
-        Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, ChopMiniGame.COLORS);
+        Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, targetColors);
 
         // Then
         assertTrue(result.isPresent());
@@ -52,9 +59,10 @@ public class AppTest
         // Given
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
         BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
+        Collection<Color> targetColors = config.getChopMiniGame().getTargetColors();
 
         // When
-        Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, ChopMiniGame.COLORS);
+        Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, targetColors);
 
         // Then
         assertFalse(result.isPresent());

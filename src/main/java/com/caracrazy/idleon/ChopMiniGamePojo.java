@@ -1,6 +1,12 @@
 package com.caracrazy.idleon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChopMiniGamePojo {
 
@@ -31,8 +37,22 @@ public class ChopMiniGamePojo {
         return messages;
     }
 
-    public List<String> getColors() {
+    @JsonProperty("targetColors")
+    private List<String> getColors() {
         return colors;
+    }
+
+    private List<Color> targetColors = new ArrayList<>();
+
+    @JsonIgnore
+    public List<Color> getTargetColors() {
+        if (targetColors.isEmpty() && !getColors().isEmpty()) {
+            targetColors = getColors().stream()
+                    .map(it -> it.split(","))
+                    .map(it -> new Color(Integer.parseInt(it[0].trim()), Integer.parseInt(it[1].trim()), Integer.parseInt(it[2].trim())))
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+        return targetColors;
     }
 
     public static class Messages {
