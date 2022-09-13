@@ -10,11 +10,7 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class YamlLoader {
 
-    private static final String FAIL_TO_PARSE_YAML =
-            "Failed to parse YAML file \"%s\"";
-
-    private static final String FILE_NOT_FOUND =
-            "File \"%s\" not found";
+    public static final String TEMPLATE_ERROR = "%s: %s";
 
     private YamlLoader() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
@@ -30,7 +26,10 @@ public class YamlLoader {
 
     private static URL getUrl(String filename) {
         URL url = YamlLoader.class.getClassLoader().getResource(filename);
-        if (url == null) throw new IllegalStateException(String.format(FILE_NOT_FOUND, filename));
+        if (url == null) {
+            String message = String.format(TEMPLATE_ERROR, messages().getErrorImageLoad(), filename);
+            throw new IllegalStateException(message);
+        }
         return url;
     }
 
@@ -38,7 +37,8 @@ public class YamlLoader {
         try {
             return objectMapper.readValue(getUrl(filename), clazz);
         } catch (IOException e) {
-            throw new IllegalStateException(String.format(FAIL_TO_PARSE_YAML, filename), e);
+            String message = String.format(TEMPLATE_ERROR, messages().getErrorImageRead(), filename);
+            throw new IllegalStateException(message, e);
         }
     }
 }
