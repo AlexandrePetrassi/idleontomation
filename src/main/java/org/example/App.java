@@ -33,7 +33,7 @@ public class App {
     }
 
     public static void startChopMiniGame(AutoItX autoItX, Rectangle gameArea) {
-        BufferedImage leaf = ImageLoader.load("/leaf.bmp");
+        BufferedImage leaf = ImageLoader.loadResource("leaf.bmp");
         keepClicking(autoItX, leaf, gameArea);
     }
 
