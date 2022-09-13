@@ -24,26 +24,27 @@ public class Keyboard implements NativeKeyListener {
 
     public static void use(Runnable runnable) {
         pressedKeys.clear();
+        NativeKeyListener listener = new EventListener();
         try {
-            start();
+            start(listener);
             runnable.run();
         } finally {
-            stop();
+            stop(listener);
         }
     }
 
-    private static void start() {
+    private static void start(NativeKeyListener listener) {
         registerHook();
-        startListening();
+        startListening(listener);
     }
 
-    private static void stop() {
-        stopListening();
+    private static void stop(NativeKeyListener listener) {
+        stopListening(listener);
         unregisterHook();
     }
 
-    private static void stopListening() {
-        GlobalScreen.removeNativeKeyListener(EventListener.INSTANCE);
+    private static void stopListening(NativeKeyListener listener) {
+        GlobalScreen.removeNativeKeyListener(listener);
     }
 
     private static void unregisterHook() {
@@ -54,8 +55,8 @@ public class Keyboard implements NativeKeyListener {
         }
     }
 
-    private static void startListening() {
-        GlobalScreen.addNativeKeyListener(EventListener.INSTANCE);
+    private static void startListening(NativeKeyListener listener) {
+        GlobalScreen.addNativeKeyListener(listener);
     }
 
     private static void registerHook() {
@@ -67,8 +68,6 @@ public class Keyboard implements NativeKeyListener {
     }
 
     private static class EventListener implements NativeKeyListener {
-
-        public static final EventListener INSTANCE = new EventListener();
 
         @Override
         public void nativeKeyPressed(NativeKeyEvent e) {
