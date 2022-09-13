@@ -1,7 +1,7 @@
 package com.caracrazy.idleon;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.jnativehook.KeyboardListener;
+import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.automation.robot.Screenshooter;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
@@ -21,10 +21,10 @@ public class ChopMiniGame {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static void start(AutoItX autoItX, ChopMiniGameData config) {
+    public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
         Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
-        keepClicking(autoItX, leaf, gameArea, config);
+        keepClicking(autoItX, leaf, gameArea, keyboard, config);
     }
 
     public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGameData config) {
@@ -52,11 +52,11 @@ public class ChopMiniGame {
         );
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, ChopMiniGameData config) {
+    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, ChopMiniGameData config) {
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
-            if(KeyboardListener.isKeyPressed(config.getForceExitKey())) {
+            if(keyboard.isKeyPressed(config.getForceExitKey())) {
                 System.out.println(messages().getInfoForceExit());
                 return;
             } else if (!isGood.isPresent()){

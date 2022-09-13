@@ -7,27 +7,21 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static com.caracrazy.localization.Messages.messages;
 
 public class KeyboardListener implements NativeKeyListener {
 
-    private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
-
     private KeyboardListener() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static boolean isKeyPressed(int keyCode) {
-        return pressedKeys.getOrDefault(keyCode, false);
-    }
-
-    public static void use(Runnable runnable) {
-        pressedKeys.clear();
-        NativeKeyListener listener = new EventListener();
+    public static void use(Consumer<Keyboard> action) {
+        EventListener listener = new EventListener();
         try {
             start(listener);
-            runnable.run();
+            action.accept(listener);
         } finally {
             stop(listener);
         }
@@ -67,7 +61,9 @@ public class KeyboardListener implements NativeKeyListener {
         }
     }
 
-    private static class EventListener implements NativeKeyListener {
+    private static class EventListener implements NativeKeyListener, Keyboard {
+
+        private final Map<Integer, Boolean> pressedKeys = new HashMap<>();
 
         @Override
         public void nativeKeyPressed(NativeKeyEvent e) {
@@ -82,6 +78,11 @@ public class KeyboardListener implements NativeKeyListener {
         @Override
         public void nativeKeyTyped(NativeKeyEvent e) {
             // Nothing
+        }
+
+        @Override
+        public boolean isKeyPressed(int keyCode) {
+            return pressedKeys.getOrDefault(keyCode, false);
         }
     }
 }
