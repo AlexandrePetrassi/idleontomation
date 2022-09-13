@@ -20,11 +20,11 @@ public class App {
         focusWindow(autoItX, windowName);
         Rectangle windowRect = getWindowRect(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(windowRect);
-        Rectangle result = doItAgain(screenshot);
+        Rectangle result = findBiggerMinigameArea(screenshot);
         return new Rectangle(windowRect.x + result.x, windowRect.y + result.y, result.width, result.height);
     }
 
-    public static Rectangle doItAgain(BufferedImage screenshot) {
+    public static Rectangle findBiggerMinigameArea(BufferedImage screenshot) {
         BufferedImage reference = ImageLoader.load("/chop.bmp");
         Rectangle area = new Rectangle(10, -11, 240, 15);
         Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
