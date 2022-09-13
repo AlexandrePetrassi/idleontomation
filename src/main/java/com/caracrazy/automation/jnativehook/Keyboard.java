@@ -67,6 +67,8 @@ public class Keyboard implements NativeKeyListener {
 
     private static class EventListener implements NativeKeyListener {
 
+        public static final EventListener INSTANCE = new EventListener();
+
         @Override
         public void nativeKeyPressed(NativeKeyEvent e) {
             pressedKeys.put(e.getKeyCode(), true);
@@ -81,7 +83,5 @@ public class Keyboard implements NativeKeyListener {
         public void nativeKeyTyped(NativeKeyEvent e) {
             // Nothing
         }
-
-        public static final EventListener INSTANCE = new EventListener();
     }
 }
