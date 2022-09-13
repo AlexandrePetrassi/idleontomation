@@ -25,6 +25,17 @@ public class ImageExtensions {
         return null;
     }
 
+    public static boolean similar(BufferedImage base, BufferedImage other, int limit) {
+        requireSameSize(base, other);
+        int size = base.getWidth() * base.getHeight();
+        long iterations = size - 1L;
+        return IntStream
+                .iterate(0, x -> x)
+                .limit(iterations)
+                .filter(index -> !getPixel(other, index).equals(Color.MAGENTA))
+                .allMatch(index -> matchPixel(getPixel(base, index), getPixel(other, index), limit));
+    }
+
     public static boolean fastSimilarity(BufferedImage base, BufferedImage other, int threshold) {
         requireSameSize(base, other);
         int size = base.getWidth() * base.getHeight();
