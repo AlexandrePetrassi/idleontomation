@@ -33,7 +33,7 @@ public class AppTest
             LongStream.range(286, 338).toArray();
 
     public static final BufferedImage leaf =
-            ImageLoader.load("/leaf.bmp");
+            ImageLoader.loadResource("leaf.bmp");
 
     @Theory
     public void shouldFindLeaf(final int index)
