@@ -20,13 +20,13 @@ public class ChopMiniGame {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static void start(AutoItX autoItX, ChopMiniGamePojo config) {
+    public static void start(AutoItX autoItX, ChopMiniGameData config) {
         Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
         keepClicking(autoItX, leaf, gameArea, config);
     }
 
-    public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGamePojo config) {
+    public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGameData config) {
         focusWindow(autoItX, windowName);
         Rectangle windowRect = getWindowRect(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(windowRect);
@@ -34,7 +34,7 @@ public class ChopMiniGame {
         return new Rectangle(windowRect.x + result.x, windowRect.y + result.y, result.width, result.height);
     }
 
-    public static Rectangle findBiggerMinigameArea(BufferedImage screenshot, ChopMiniGamePojo config) {
+    public static Rectangle findBiggerMinigameArea(BufferedImage screenshot, ChopMiniGameData config) {
         BufferedImage reference = ImageLoader.loadResource(config.getFrameReference());
         Rectangle area = new Rectangle(10, -11, 240, 15);
         Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, ImageExtensions.getRectangle(screenshot), 8);
@@ -51,7 +51,7 @@ public class ChopMiniGame {
         );
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, ChopMiniGamePojo config) {
+    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, ChopMiniGameData config) {
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());

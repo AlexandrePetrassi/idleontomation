@@ -1,18 +1,18 @@
 package com.caracrazy.configuration;
 
 import com.caracrazy.automation.AutoItXData;
-import com.caracrazy.idleon.ChopMiniGamePojo;
+import com.caracrazy.idleon.ChopMiniGameData;
 
 public class ConfigurationData {
 
     private AutoItXData autoItX;
-    private ChopMiniGamePojo chopMiniGame;
+    private ChopMiniGameData chopMiniGame;
 
     public AutoItXData getAutoItX() {
         return autoItX;
     }
 
-    public ChopMiniGamePojo getChopMiniGame() {
+    public ChopMiniGameData getChopMiniGame() {
         return chopMiniGame;
     }
 

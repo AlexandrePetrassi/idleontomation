@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChopMiniGamePojo {
+public class ChopMiniGameData {
 
     private String appName;
     private String frameReference;
