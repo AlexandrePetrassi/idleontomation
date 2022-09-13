@@ -16,7 +16,7 @@ import static org.example.idleon.ChopMiniGame.keepClicking;
 
 public class App {
 
-    public static Rectangle doIt(AutoItX autoItX, String windowName) {
+    public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName) {
         focusWindow(autoItX, windowName);
         Rectangle windowRect = getWindowRect(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(windowRect);
@@ -39,7 +39,7 @@ public class App {
 
     public static void automate() {
         AutoItX autoItX = AutoItXFactory.create();
-        Rectangle gameArea = doIt(autoItX, "Legends Of Idleon");
+        Rectangle gameArea = findCriticalMinigameArea(autoItX, "Legends Of Idleon");
         startChopMiniGame(autoItX, gameArea);
     }
 
