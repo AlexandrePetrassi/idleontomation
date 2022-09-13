@@ -4,6 +4,10 @@ import java.awt.*;
 
 public class ColorExtensions {
 
+    private ColorExtensions() {
+        throw new IllegalStateException("Utility Class");
+    }
+
     public static boolean matchPixel(Color a, Color b, int limit) {
         int red = Math.abs(a.getRed() - b.getRed());
         int blue = Math.abs(a.getBlue() - b.getBlue());
