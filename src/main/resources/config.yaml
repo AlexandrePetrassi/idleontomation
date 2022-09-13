@@ -1,4 +1,4 @@
-autoIt:
+autoItX:
   dll:
     name: "jacob-1.14.3-x64.dll"
     directory: "C:\\Program Files (x86)\\AutoIt3\\AutoItX"

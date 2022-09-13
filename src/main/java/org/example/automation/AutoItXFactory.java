@@ -2,7 +2,6 @@ package org.example.automation;
 
 import autoitx4java.AutoItX;
 import com.jacob.com.LibraryLoader;
-import org.example.data.ConfigurationPojo;
 
 import java.nio.file.Paths;
 
@@ -12,11 +11,11 @@ public class AutoItXFactory {
         throw new IllegalStateException("Utility class");
     }
 
-    private static String getDllPath(ConfigurationPojo.AutoItData config) {
+    private static String getDllPath(AutoItXPojo config) {
         return config.getDll().getDirectory();
     }
 
-    private static String getDllName(ConfigurationPojo.AutoItData config) {
+    private static String getDllName(AutoItXPojo config) {
         return config.getDll().getName();
     }
 
@@ -38,7 +37,7 @@ public class AutoItXFactory {
         return new AutoItX();
     }
 
-    public static AutoItX create(ConfigurationPojo.AutoItData config) {
+    public static AutoItX create(AutoItXPojo config) {
         return loadAutoIt(getDllPath(config), getDllName(config));
     }
 }
