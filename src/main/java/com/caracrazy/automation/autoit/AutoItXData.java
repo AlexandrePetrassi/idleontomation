@@ -1,4 +1,4 @@
-package com.caracrazy.automation;
+package com.caracrazy.automation.autoit;
 
 public class AutoItXData {
     private Dll dll;

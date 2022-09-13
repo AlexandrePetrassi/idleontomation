@@ -1,6 +1,6 @@
 package com.caracrazy.configuration;
 
-import com.caracrazy.automation.AutoItXData;
+import com.caracrazy.automation.autoit.AutoItXData;
 import com.caracrazy.idleon.ChopMiniGameData;
 
 public class ConfigurationData {

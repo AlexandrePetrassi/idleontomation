@@ -1,8 +1,8 @@
 package com.caracrazy;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.AutoItXFactory;
 import com.caracrazy.automation.Keyboard;
+import com.caracrazy.automation.autoit.AutoItXFactory;
 import com.caracrazy.configuration.ConfigurationData;
 import com.caracrazy.configuration.ConfigurationFactory;
 import com.caracrazy.idleon.ChopMiniGame;

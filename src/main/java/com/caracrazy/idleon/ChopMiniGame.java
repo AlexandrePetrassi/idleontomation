@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.caracrazy.automation.AutoItXExtensions.*;
+import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
 
 public class ChopMiniGame {
 
