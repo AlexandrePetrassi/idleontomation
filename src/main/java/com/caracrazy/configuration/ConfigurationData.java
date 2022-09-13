@@ -3,7 +3,7 @@ package com.caracrazy.configuration;
 import com.caracrazy.automation.AutoItXData;
 import com.caracrazy.idleon.ChopMiniGamePojo;
 
-public class ConfigurationPojo {
+public class ConfigurationData {
 
     private AutoItXData autoItX;
     private ChopMiniGamePojo chopMiniGame;

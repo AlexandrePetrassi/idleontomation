@@ -1,6 +1,6 @@
 package com.caracrazy;
 
-import com.caracrazy.configuration.ConfigurationPojo;
+import com.caracrazy.configuration.ConfigurationData;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
 import com.caracrazy.idleon.ChopMiniGame;
@@ -34,8 +34,8 @@ public class AppTest
     public static final long[] screenshots2 =
             LongStream.range(286, 338).toArray();
 
-    private static final ConfigurationPojo config =
-            YamlLoader.load(ConfigurationPojo.class, "config.yaml");
+    private static final ConfigurationData config =
+            YamlLoader.load(ConfigurationData.class, "config.yaml");
 
     public static final BufferedImage leaf =
             ImageLoader.loadResource(config.getChopMiniGame().getCursorReference());

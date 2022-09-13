@@ -4,15 +4,15 @@ import com.caracrazy.yaml.YamlLoader;
 
 public class ConfigurationFactory {
 
-    private static ConfigurationPojo cache;
+    private static ConfigurationData cache;
 
     private ConfigurationFactory() {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static ConfigurationPojo create(String filename) {
+    public static ConfigurationData create(String filename) {
         if (cache == null) {
-            cache = YamlLoader.load(ConfigurationPojo.class, filename);
+            cache = YamlLoader.load(ConfigurationData.class, filename);
         }
         return cache;
     }
