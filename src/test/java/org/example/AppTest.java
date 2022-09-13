@@ -53,7 +53,7 @@ public class AppTest
     public void shouldNotFindLeaf(final long index)
     {
         // Given
-        BufferedImage screenshot = TestImageLoader.load("/inputs/chop/minigame (" + index + ").png");
+        BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
         BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
 
         // When
