@@ -46,12 +46,21 @@ public class Keyboard implements NativeKeyListener {
         public static final EventListener INSTANCE = new EventListener();
     }
 
-    public static void start() {
+    public static void use(Runnable runnable) {
+        try {
+            start();
+            runnable.run();
+        } finally {
+            stop();
+        }
+    }
+
+    private static void start() {
         registerHook();
         startListening();
     }
 
-    public static void stop() {
+    private static void stop() {
         stopListening();
         unregisterHook();
     }

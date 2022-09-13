@@ -44,11 +44,6 @@ public class App {
     }
 
     public static void main(String[] args) {
-        Keyboard.start();
-        try {
-            automate();
-        } finally {
-            Keyboard.stop();
-        }
+        Keyboard.use(App::automate);
     }
 }
