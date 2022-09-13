@@ -28,8 +28,6 @@ public class ChopMiniGame {
         throw new IllegalStateException("Utility Class");
     }
 
-    private static int allowedFailures = 32;
-
     public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Rectangle offset) {
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
@@ -38,17 +36,11 @@ public class ChopMiniGame {
                 System.out.println("Interrupted by ESC Key");
                 return;
             } else if (!isGood.isPresent()){
-                --allowedFailures;
-                if (allowedFailures <= 0) {
-                    System.out.println("Interrupted for not finding the reference image");
-                    return;
-                }
+                System.out.println("Reference image not found");
             } else if (Boolean.TRUE.equals(isGood.get())) {
                 click(autoItX, gameArea.x, gameArea.y);
-                allowedFailures = 32;
             } else {
                 autoItX.sleep(1);
-                allowedFailures = 32;
             }
         }
     }
