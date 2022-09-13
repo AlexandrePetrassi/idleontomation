@@ -8,11 +8,12 @@ import org.example.graphics.Screenshooter;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 
 import static org.example.automation.AutoItXExtensions.click;
-import static org.example.graphics.ImageExtensions.getEnclosingArea;
 import static org.example.graphics.ImageExtensions.getSubImagePosition;
 
 public class ChopMiniGame {
@@ -28,16 +29,17 @@ public class ChopMiniGame {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Rectangle offset) {
+    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea) {
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
-            Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, offset, COLORS);
+            Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, COLORS);
             if(Keyboard.isKeyPressed(NativeKeyEvent.VC_ESCAPE)) {
                 System.out.println("Interrupted by ESC Key");
                 return;
             } else if (!isGood.isPresent()){
                 System.out.println("Reference image not found");
             } else if (Boolean.TRUE.equals(isGood.get())) {
+                System.out.println("click");
                 click(autoItX, gameArea.x, gameArea.y);
             } else {
                 autoItX.sleep(1);
@@ -45,7 +47,7 @@ public class ChopMiniGame {
         }
     }
 
-    public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Rectangle offset, Color[] colors) {
+    public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Color[] colors) {
         Rectangle rect = ImageExtensions.getRectangle(screenshot);
         Point leafPoint = getSubImagePosition(screenshot, reference, rect, 48);
         if (leafPoint == null) {
