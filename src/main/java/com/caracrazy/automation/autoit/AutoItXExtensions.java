@@ -4,10 +4,12 @@ import autoitx4java.AutoItX;
 
 import java.awt.*;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class AutoItXExtensions {
 
     private AutoItXExtensions() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static void focusWindow(AutoItX autoItX, String windowName) {

@@ -2,10 +2,12 @@ package com.caracrazy.graphics;
 
 import java.awt.*;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class ColorExtensions {
 
     private ColorExtensions() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static boolean matchPixel(Color a, Color b, int limit) {

@@ -5,10 +5,12 @@ import com.caracrazy.yaml.YamlLoader;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class MessagesFactory {
 
     private MessagesFactory() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     private static final String LOCALE_KEY = "user.language";

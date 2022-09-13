@@ -2,12 +2,14 @@ package com.caracrazy.configuration;
 
 import com.caracrazy.yaml.YamlLoader;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class ConfigurationFactory {
 
     private static ConfigurationData cache;
 
     private ConfigurationFactory() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static ConfigurationData create(String filename) {

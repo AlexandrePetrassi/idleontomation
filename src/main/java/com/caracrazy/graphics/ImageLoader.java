@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class ImageLoader {
 
     private static final String FAIL_TO_READ_IMAGE =
@@ -14,7 +16,7 @@ public class ImageLoader {
             "File \"%s\" not found";
 
     private ImageLoader() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     private static URL getUrl(String filename) {

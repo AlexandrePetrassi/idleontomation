@@ -2,6 +2,8 @@ package com.caracrazy.automation.robot;
 
 import java.awt.*;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class RobotFactory {
 
     public static final String ROBOT_INSTANTIATION_ERROR =
@@ -10,7 +12,7 @@ public class RobotFactory {
     private static Robot cachedRobot;
 
     private RobotFactory() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     private static Robot createRobot() {

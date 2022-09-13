@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 
 import static com.caracrazy.graphics.ColorExtensions.averageColor;
 import static com.caracrazy.graphics.ColorExtensions.matchPixel;
+import static com.caracrazy.localization.Messages.messages;
 
 public class ImageExtensions {
 
@@ -13,7 +14,7 @@ public class ImageExtensions {
             "Images are not same size: base(%d, %d) vs other(%d, %d)";
 
     private ImageExtensions() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static Point getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, Rectangle searchArea, int threshold) {

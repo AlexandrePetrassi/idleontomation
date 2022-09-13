@@ -5,10 +5,12 @@ import com.jacob.com.LibraryLoader;
 
 import java.nio.file.Paths;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class AutoItXFactory {
 
     private AutoItXFactory() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     private static String getDllPath(AutoItXData config) {

@@ -8,6 +8,8 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class Keyboard implements NativeKeyListener {
 
     public static final String UNREGISTERING_ERROR =
@@ -19,7 +21,7 @@ public class Keyboard implements NativeKeyListener {
     private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
 
     private Keyboard() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static boolean isKeyPressed(int keyCode) {

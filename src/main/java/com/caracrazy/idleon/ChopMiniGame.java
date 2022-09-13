@@ -13,11 +13,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
+import static com.caracrazy.localization.Messages.messages;
 
 public class ChopMiniGame {
 
     private ChopMiniGame() {
-        throw new IllegalStateException("Utility Class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     public static void start(AutoItX autoItX, ChopMiniGameData config) {

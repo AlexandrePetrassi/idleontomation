@@ -6,6 +6,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.IOException;
 import java.net.URL;
 
+import static com.caracrazy.localization.Messages.messages;
+
 public class YamlLoader {
 
     private static final String FAIL_TO_PARSE_YAML =
@@ -15,7 +17,7 @@ public class YamlLoader {
             "File \"%s\" not found";
 
     private YamlLoader() {
-        throw new IllegalStateException("Utility class");
+        throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
     private static final ObjectMapper objectMapper = getMapper();
