@@ -66,9 +66,9 @@ public class AppTest
     @Test
     public void test() {
         // Dado
-        BufferedImage screenshot = TestImageLoader.load("/inputs/chop/minigame-fullscreen.png");
-        BufferedImage reference = ImageLoader.load("/chop.bmp");
-        BufferedImage expected = TestImageLoader.load("/asserts/chop-area-assert.png");
+        BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame-fullscreen.png");
+        BufferedImage reference = ImageLoader.loadResource("chop.bmp");
+        BufferedImage expected = TestImageLoader.loadResource("asserts/chop-area-assert.png");
         Rectangle area = new Rectangle(10, -11, 240, 15);
 
         // Quando
