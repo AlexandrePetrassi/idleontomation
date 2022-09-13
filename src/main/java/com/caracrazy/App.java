@@ -13,6 +13,6 @@ public class App {
         String configFile = ((args.length > 0) ? args[0] : "config") + ".yaml";
         ConfigurationPojo config = ConfigurationFactory.create(configFile);
         AutoItX autoItX = AutoItXFactory.create(config.getAutoItX());
-        Keyboard.use(() -> ChopMiniGame.start(autoItX));
+        Keyboard.use(() -> ChopMiniGame.start(autoItX, config.getChopMiniGame()));
     }
 }
