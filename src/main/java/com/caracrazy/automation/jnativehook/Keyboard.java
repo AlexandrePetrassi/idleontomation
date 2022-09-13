@@ -22,26 +22,6 @@ public class Keyboard implements NativeKeyListener {
         return pressedKeys.getOrDefault(keyCode, false);
     }
 
-    private static class EventListener implements NativeKeyListener {
-
-        @Override
-        public void nativeKeyPressed(NativeKeyEvent e) {
-            pressedKeys.put(e.getKeyCode(), true);
-        }
-
-        @Override
-        public void nativeKeyReleased(NativeKeyEvent e) {
-            pressedKeys.put(e.getKeyCode(), false);
-        }
-
-        @Override
-        public void nativeKeyTyped(NativeKeyEvent e) {
-            // Nothing
-        }
-
-        public static final EventListener INSTANCE = new EventListener();
-    }
-
     public static void use(Runnable runnable) {
         try {
             start();
@@ -83,5 +63,25 @@ public class Keyboard implements NativeKeyListener {
         } catch (NativeHookException e) {
             throw new IllegalStateException(messages().getErrorNativeHookRegister(), e);
         }
+    }
+
+    private static class EventListener implements NativeKeyListener {
+
+        @Override
+        public void nativeKeyPressed(NativeKeyEvent e) {
+            pressedKeys.put(e.getKeyCode(), true);
+        }
+
+        @Override
+        public void nativeKeyReleased(NativeKeyEvent e) {
+            pressedKeys.put(e.getKeyCode(), false);
+        }
+
+        @Override
+        public void nativeKeyTyped(NativeKeyEvent e) {
+            // Nothing
+        }
+
+        public static final EventListener INSTANCE = new EventListener();
     }
 }
