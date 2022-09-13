@@ -14,6 +14,4 @@ public class Screenshooter {
     public static BufferedImage screenshot(Rectangle screenshotArea) {
         return RobotFactory.create().createScreenCapture(screenshotArea);
     }
-
-
 }
