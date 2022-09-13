@@ -52,8 +52,12 @@ public class ChopMiniGame {
             System.out.println("Reference image not found");
             return Optional.empty();
         }
-        Rectangle rectangle = getEnclosingArea(leafPoint, offset);
-        Color color = new Color(screenshot.getRGB(rectangle.x, (int)rectangle.getMaxY()), false);
-        return Optional.of(Arrays.asList(colors).contains(color));
+        Collection<Color> foundColors = new ArrayList<>();
+        foundColors.add(new Color(screenshot.getRGB(leafPoint.x, screenshot.getHeight() - 1), false));
+        foundColors.add(new Color(screenshot.getRGB(leafPoint.x + 1, screenshot.getHeight() - 1), false));
+        foundColors.add(new Color(screenshot.getRGB(leafPoint.x - 1, screenshot.getHeight() - 1), false));
+        foundColors.add(new Color(screenshot.getRGB(leafPoint.x - 2, screenshot.getHeight() - 1), false));
+        foundColors.add(new Color(screenshot.getRGB(leafPoint.x + 2, screenshot.getHeight() - 1), false));
+        return Optional.of(Arrays.asList(colors).containsAll(foundColors));
     }
 }
