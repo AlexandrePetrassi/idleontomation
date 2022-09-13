@@ -31,7 +31,7 @@ public class ChopMiniGame {
         throw new IllegalStateException("Utility Class");
     }
 
-    public static void startChopMiniGame() {
+    public static void start() {
         AutoItX autoItX = AutoItXFactory.create();
         Rectangle gameArea = ChopMiniGame.findCriticalMinigameArea(autoItX, "Legends Of Idleon");
         BufferedImage leaf = ImageLoader.loadResource("leaf.bmp");

@@ -6,6 +6,6 @@ import org.example.idleon.ChopMiniGame;
 public class App {
 
     public static void main(String[] args) {
-        Keyboard.use(ChopMiniGame::startChopMiniGame);
+        Keyboard.use(ChopMiniGame::start);
     }
 }
