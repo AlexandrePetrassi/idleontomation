@@ -1,12 +1,12 @@
 package org.example.data;
 
 public class ConfigurationPojo {
-    private AutoIt autoIt;
+    private AutoItData autoIt;
 
-    public AutoIt getAutoIt() {
+    public AutoItData getAutoIt() {
         return autoIt;
     }
-    public static class AutoIt {
+    public static class AutoItData {
         private Dll dll;
 
         public Dll getDll() {
