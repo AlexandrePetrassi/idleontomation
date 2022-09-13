@@ -4,6 +4,7 @@ import autoitx4java.AutoItX;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import org.example.automation.Keyboard;
 import org.example.graphics.ImageExtensions;
+import org.example.graphics.ImageLoader;
 import org.example.graphics.Screenshooter;
 
 import java.awt.*;
@@ -14,7 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import static org.example.automation.AutoItXExtensions.click;
-import static org.example.graphics.ImageExtensions.getSubImagePosition;
+import static org.example.graphics.ImageExtensions.*;
 
 public class ChopMiniGame {
 
@@ -27,6 +28,14 @@ public class ChopMiniGame {
 
     private ChopMiniGame() {
         throw new IllegalStateException("Utility Class");
+    }
+
+    public static Rectangle findBiggerMinigameArea(BufferedImage screenshot) {
+        BufferedImage reference = ImageLoader.loadResource("chop.bmp");
+        Rectangle area = new Rectangle(10, -11, 240, 15);
+        Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
+        if (referenceArea == null) throw new IllegalStateException("Chop mini game not found");
+        return getEnclosingArea(referenceArea, area);
     }
 
     public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea) {
