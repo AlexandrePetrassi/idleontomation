@@ -3,7 +3,7 @@ package org.example;
 import autoitx4java.AutoItX;
 import org.example.automation.AutoItXFactory;
 import org.example.automation.Keyboard;
-import org.example.data.ConfigurationFactory;
+import org.example.configuration.ConfigurationFactory;
 import org.example.data.ConfigurationPojo;
 import org.example.idleon.ChopMiniGame;
 
