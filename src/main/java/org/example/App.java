@@ -25,7 +25,7 @@ public class App {
     }
 
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot) {
-        BufferedImage reference = ImageLoader.load("/chop.bmp");
+        BufferedImage reference = ImageLoader.loadResource("chop.bmp");
         Rectangle area = new Rectangle(10, -11, 240, 15);
         Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
         if (referenceArea == null) throw new IllegalStateException("Chop mini game not found");
