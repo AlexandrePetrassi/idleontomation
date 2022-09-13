@@ -1,7 +1,7 @@
 package com.caracrazy.idleon;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.Keyboard;
+import com.caracrazy.automation.janativehook.Keyboard;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
 import com.caracrazy.graphics.Screenshooter;

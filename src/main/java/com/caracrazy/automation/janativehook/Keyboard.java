@@ -1,4 +1,4 @@
-package com.caracrazy.automation;
+package com.caracrazy.automation.janativehook;
 
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
