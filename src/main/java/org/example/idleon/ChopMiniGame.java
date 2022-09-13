@@ -17,7 +17,7 @@ import static org.example.graphics.ImageExtensions.getSubImagePosition;
 
 public class ChopMiniGame {
 
-    private static final Color[] COLORS = new Color[]{
+    public static final Color[] COLORS = new Color[]{
             new Color(122, 206, 39),
             new Color(38, 138, 20),
             new Color(252, 255, 122),
