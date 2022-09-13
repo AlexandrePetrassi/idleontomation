@@ -1,4 +1,4 @@
-package com.caracrazy.graphics;
+package com.caracrazy.automation.robot;
 
 import java.awt.*;
 
