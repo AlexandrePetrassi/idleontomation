@@ -4,7 +4,7 @@ import autoitx4java.AutoItX;
 import org.example.automation.AutoItXFactory;
 import org.example.automation.Keyboard;
 import org.example.configuration.ConfigurationFactory;
-import org.example.data.ConfigurationPojo;
+import org.example.configuration.ConfigurationPojo;
 import org.example.idleon.ChopMiniGame;
 
 public class App {

@@ -1,6 +1,5 @@
 package org.example.configuration;
 
-import org.example.data.ConfigurationPojo;
 import org.example.data.YamlLoader;
 
 public class ConfigurationFactory {
