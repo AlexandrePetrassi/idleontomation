@@ -2,7 +2,7 @@ package com.caracrazy;
 
 import autoitx4java.AutoItX;
 import com.caracrazy.automation.autoit.AutoItXFactory;
-import com.caracrazy.automation.janativehook.Keyboard;
+import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.configuration.ConfigurationData;
 import com.caracrazy.configuration.ConfigurationFactory;
 import com.caracrazy.idleon.ChopMiniGame;
