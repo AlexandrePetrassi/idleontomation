@@ -32,18 +32,14 @@ public class App {
         return getEnclosingArea(referenceArea, area);
     }
 
-    public static void startChopMiniGame(AutoItX autoItX, Rectangle gameArea) {
+    public static void startChopMiniGame() {
+        AutoItX autoItX = AutoItXFactory.create();
+        Rectangle gameArea = findCriticalMinigameArea(autoItX, "Legends Of Idleon");
         BufferedImage leaf = ImageLoader.loadResource("leaf.bmp");
         keepClicking(autoItX, leaf, gameArea);
     }
 
-    public static void automate() {
-        AutoItX autoItX = AutoItXFactory.create();
-        Rectangle gameArea = findCriticalMinigameArea(autoItX, "Legends Of Idleon");
-        startChopMiniGame(autoItX, gameArea);
-    }
-
     public static void main(String[] args) {
-        Keyboard.use(App::automate);
+        Keyboard.use(App::startChopMiniGame);
     }
 }
