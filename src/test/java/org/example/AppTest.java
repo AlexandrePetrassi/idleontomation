@@ -64,7 +64,7 @@ public class AppTest
     }
 
     @Test
-    public void test() {
+    public void shouldFindTheCriticalAreaFromAFullScreenshot() {
         // Dado
         BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame-fullscreen.png");
         BufferedImage reference = ImageLoader.loadResource("chop.bmp");
@@ -74,9 +74,9 @@ public class AppTest
         // Quando
         Point referenceArea = getSubImagePosition(screenshot, reference, getRectangle(screenshot), 8);
         if (referenceArea == null) Assert.fail();
+        Rectangle point = getEnclosingArea(referenceArea, area);
 
         // Entao
-        Rectangle point = getEnclosingArea(referenceArea, area);
         BufferedImage shot = screenshot.getSubimage(point.x, point.y, point.width, point.height);
         assertTrue(similar(shot, expected, 1));
     }
