@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
+import static org.example.graphics.ColorExtensions.averageColor;
 import static org.example.graphics.ColorExtensions.matchPixel;
 
 public class ImageExtensions {
@@ -79,13 +80,6 @@ public class ImageExtensions {
         } else {
             return matchPixel(colorA, averageColor(colorB, colorC), threshold);
         }
-    }
-
-    public static Color averageColor(Color colorA, Color colorB) {
-        int r = (colorA.getRed() + colorB.getRed()) / 2;
-        int g = (colorA.getGreen() + colorB.getGreen()) / 2;
-        int b = (colorA.getBlue() + colorB.getBlue()) / 2;
-        return new Color(r, g, b);
     }
 
     public static Color getPixel(BufferedImage image, int index) {
