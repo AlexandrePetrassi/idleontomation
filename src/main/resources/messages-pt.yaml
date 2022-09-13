@@ -1,0 +1,8 @@
+errorUtilityClass: "Classe de Utilitários."
+errorNativeHookUnregister: "Houve um problema ao remover do registro o Native Hook do teclado."
+errorNativeHookRegister: "Houve um problema ao registrar o Native Hook do teclado."
+errorRobotInstantiation: "Problemas ao instanciar \"um awt.robot\"."
+errorFrameNotFound: "Mini Game de cortar árvores não encontrado."
+errorCursorNotFound: "Imagem do cursor de folha não encontrado."
+infoForceExit: "Interrompido devido a tecla ESC ser pressionada."
+infoClick: "Click."
