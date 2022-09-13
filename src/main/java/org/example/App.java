@@ -9,18 +9,12 @@ import org.example.graphics.Screenshooter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static org.example.automation.AutoItXExtensions.*;
+import static org.example.automation.AutoItXExtensions.focusWindow;
+import static org.example.automation.AutoItXExtensions.getWindowRect;
 import static org.example.graphics.ImageExtensions.*;
 import static org.example.idleon.ChopMiniGame.keepClicking;
 
 public class App {
-
-    public static Rectangle gameArea(AutoItX autoItX) {
-        String windowName = "Legends Of Idleon";
-        BufferedImage chop = ImageLoader.load("/chop.bmp");
-        Rectangle area = new Rectangle(10, -11, 240, 15);
-        return getGameArea(autoItX, windowName, chop, area);
-    }
 
     public static Rectangle doIt(AutoItX autoItX, String windowName) {
         focusWindow(autoItX, windowName);
