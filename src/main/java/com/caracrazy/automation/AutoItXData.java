@@ -1,6 +1,6 @@
 package com.caracrazy.automation;
 
-public class AutoItXPojo {
+public class AutoItXData {
     private Dll dll;
 
     public Dll getDll() {

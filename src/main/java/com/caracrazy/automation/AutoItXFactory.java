@@ -11,11 +11,11 @@ public class AutoItXFactory {
         throw new IllegalStateException("Utility class");
     }
 
-    private static String getDllPath(AutoItXPojo config) {
+    private static String getDllPath(AutoItXData config) {
         return config.getDll().getDirectory();
     }
 
-    private static String getDllName(AutoItXPojo config) {
+    private static String getDllName(AutoItXData config) {
         return config.getDll().getName();
     }
 
@@ -37,7 +37,7 @@ public class AutoItXFactory {
         return new AutoItX();
     }
 
-    public static AutoItX create(AutoItXPojo config) {
+    public static AutoItX create(AutoItXData config) {
         return loadAutoIt(getDllPath(config), getDllName(config));
     }
 }
