@@ -3,7 +3,7 @@ autoItX:
     name: "jacob-1.14.3-x64.dll"
     directory: "C:\\Program Files (x86)\\AutoIt3\\AutoItX"
 chopMiniGame:
-  appName: "minigame-fullscreen"
+  appName: "Legends Of Idleon"
   frameReference: "chop.bmp"
   cursorReference: "leaf.bmp"
   forceExitKey: 1
