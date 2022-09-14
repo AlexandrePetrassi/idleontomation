@@ -42,9 +42,12 @@ public class ChopMiniGameTest {
             Rectangle area = new Rectangle(10, -11, 240, 15);
 
             // When
-            Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
-            if (referenceArea == null) Assert.fail();
-            Rectangle point = ChopMiniGame.getEnclosingArea(referenceArea, area);
+            Optional<Point> referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
+            if (!referenceArea.isPresent()) {
+                Assert.fail();
+                return;
+            }
+            Rectangle point = ChopMiniGame.getEnclosingArea(referenceArea.get(), area);
 
             // Then
             BufferedImage shot = screenshot.getSubimage(point.x, point.y, point.width, point.height);

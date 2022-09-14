@@ -41,9 +41,9 @@ public class ChopMiniGame {
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot, ChopMiniGameData config) {
         BufferedImage reference = ImageLoader.loadResource(config.getFrameReference());
         Rectangle area = new Rectangle(10, -11, 240, 15);
-        Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
-        if (referenceArea == null) throw new IllegalStateException(messages().getErrorFrameNotFound());
-        return getEnclosingArea(referenceArea, area);
+        Optional<Point> referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
+        if (referenceArea.isPresent()) return getEnclosingArea(referenceArea.get(), area);
+        throw new IllegalStateException(messages().getErrorFrameNotFound());
     }
 
     public static Rectangle getEnclosingArea(Point point, Rectangle area) {
@@ -104,11 +104,12 @@ public class ChopMiniGame {
     }
 
     public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Collection<Color> colors) {
-        Point leafPoint = ImageExtensions.getSubImagePosition(screenshot, reference, 64);
+        return ImageExtensions
+                .getSubImagePosition(screenshot, reference, 64)
+                .flatMap(p -> checkClickGoodness(p, screenshot, colors));
+    }
 
-        // Not found Leaf
-        if (leafPoint == null) return Optional.empty();
-
+    private static Optional<Boolean> checkClickGoodness(Point leafPoint, BufferedImage screenshot, Collection<Color> colors) {
         // previousPosition
         if (previousPosition == null) {
             previousPosition = leafPoint.x;

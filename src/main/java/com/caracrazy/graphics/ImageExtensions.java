@@ -2,7 +2,7 @@ package com.caracrazy.graphics;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static com.caracrazy.graphics.ColorExtensions.averageColor;
@@ -17,32 +17,32 @@ public class ImageExtensions {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static Point getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, int threshold) {
+    public static Optional<Point> getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, int threshold) {
         return iterateOverAxisY(mainImage, subImage, threshold);
     }
 
-    private static Point iterateOverAxisY(BufferedImage mainImage, BufferedImage subImage, int threshold) {
+    private static Optional<Point> iterateOverAxisY(BufferedImage mainImage, BufferedImage subImage, int threshold) {
         return IntStream.range(0, mainImage.getHeight() - subImage.getHeight())
                 .mapToObj(y -> iterateOverAxisX(mainImage, subImage, threshold, y))
                 .parallel()
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
                 .findFirst()
-                .orElse(null);
+                .orElse(Optional.empty());
     }
 
-    private static Point iterateOverAxisX(BufferedImage mainImage, BufferedImage subImage, int threshold, int y) {
+    private static Optional<Point> iterateOverAxisX(BufferedImage mainImage, BufferedImage subImage, int threshold, int y) {
         return IntStream.range(0, mainImage.getWidth() - subImage.getWidth())
                 .mapToObj(x -> getPoint(mainImage, subImage, threshold, y, x))
                 .parallel()
-                .filter(Objects::nonNull)
+                .filter(Optional::isPresent)
                 .findFirst()
-                .orElse(null);
+                .orElse(Optional.empty());
     }
 
-    private static Point getPoint(BufferedImage mainImage, BufferedImage subImage, int threshold, int y, int x) {
+    private static Optional<Point> getPoint(BufferedImage mainImage, BufferedImage subImage, int threshold, int y, int x) {
         return fastSimilarity(mainImage.getSubimage(x, y, subImage.getWidth(), subImage.getHeight()), subImage, threshold)
-                ? new Point(x, y)
-                : null;
+                ? Optional.of(new Point(x, y))
+                : Optional.empty();
     }
 
     public static boolean similar(BufferedImage base, BufferedImage other, int limit) {
