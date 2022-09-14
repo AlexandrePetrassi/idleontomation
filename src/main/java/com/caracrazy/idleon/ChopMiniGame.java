@@ -9,8 +9,11 @@ import com.caracrazy.graphics.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
 import static com.caracrazy.localization.Messages.messages;
@@ -53,13 +56,10 @@ public class ChopMiniGame {
     }
 
     public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, ChopMiniGameData config) {
-        while (true) {
+        while (!keyboard.isKeyPressed(config.getForceExitKey())) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
-            if(keyboard.isKeyPressed(config.getForceExitKey())) {
-                System.out.println(messages().getInfoForceExit());
-                return;
-            } else if (!isGood.isPresent()){
+            if (!isGood.isPresent()){
                 System.out.println(messages().getErrorCursorNotFound());
             } else if (Boolean.TRUE.equals(isGood.get())) {
                 System.out.println(messages().getInfoClick());
@@ -68,28 +68,68 @@ public class ChopMiniGame {
                 autoItX.sleep(1);
             }
         }
+        System.out.println(messages().getInfoForceExit());
     }
 
-    private static Integer lastPoint = null;
+    private static Integer previousPosition = null;
+    private static int previousDirection = 0;
+    private static Color getBarColor(BufferedImage screenshot, int leafPoint) {
+        return new Color(screenshot.getRGB(leafPoint, screenshot.getHeight() - 1), false);
+    }
 
-    public static Integer getSafeMargin(int point, int max) {
-        if (lastPoint == null) lastPoint = point;
-        int result = point + (point - lastPoint) * 4;
-        lastPoint = point;
-        if(result >= max || result < 0) return null;
-        return result;
+    private static Collection<Color> getBarColors(BufferedImage screenshot, int currentPosition, int previousPosition) {
+        int nextPosition = currentPosition - previousPosition;
+        int rightWall = screenshot.getWidth() - 8;
+        int leftWall = 0;
+        Point p = nextPosition > 0
+                ? rangeRight(rightWall, nextPosition, currentPosition)
+                : rangeLeft(leftWall, nextPosition, currentPosition);
+        return Arrays.stream(IntStream.range(p.x, p.y).toArray())
+                .mapToObj(x -> getBarColor(screenshot, x))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private static Point rangeRight(int wall, int next, int current) {
+        int surplus = (next > wall) ? next - wall : 0;
+        int bounce = wall - surplus;
+        int start = Math.min(bounce, current);
+        int end = (bounce > 0 ? wall : next);
+        return new Point(start, end);
+    }
+
+    private static Point rangeLeft(int wall, int next, int current) {
+        int surplus = (next < wall) ? wall - next : 0;
+        int bounce = wall + surplus;
+        int start = Math.max(bounce, current);
+        int end = (bounce < 0 ? wall : next);
+        return new Point(start, end);
     }
 
     public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Collection<Color> colors) {
         Rectangle rect = ImageExtensions.getRectangle(screenshot);
-        Point leafPoint = ImageExtensions.getSubImagePosition(screenshot, reference, rect, 48);
+        Point leafPoint = ImageExtensions.getSubImagePosition(screenshot, reference, rect, 64);
+
+        // Not found Leaf
         if (leafPoint == null) return Optional.empty();
 
-        Collection<Color> foundColors = new ArrayList<>();
-        foundColors.add(new Color(screenshot.getRGB(leafPoint.x, screenshot.getHeight() - 1), false));
-        Integer margin = getSafeMargin(leafPoint.x, screenshot.getWidth());
-        if(margin == null) return Optional.empty();
-        foundColors.add(new Color(screenshot.getRGB(margin, screenshot.getHeight() - 1), false));
+        // previousPosition
+        if (previousPosition == null) {
+            previousPosition = leafPoint.x;
+            previousDirection = 0;
+            return Optional.of(false);
+        }
+
+        // directionChange
+        int direction = leafPoint.x - previousDirection > 0 ? 1 : 0;
+        if (direction != previousDirection) {
+            previousPosition = leafPoint.x;
+            previousDirection = direction;
+            return Optional.of(false);
+        }
+
+        Collection<Color> foundColors = getBarColors(screenshot, leafPoint.x, previousPosition);
+        previousPosition = leafPoint.x;
+        previousDirection = direction;
         return Optional.of(colors.containsAll(foundColors));
     }
 }
