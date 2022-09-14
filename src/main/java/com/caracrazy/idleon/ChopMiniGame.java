@@ -70,6 +70,16 @@ public class ChopMiniGame {
         }
     }
 
+    private static Integer lastPoint = null;
+
+    public static Integer getSafeMargin(int point, int max) {
+        if (lastPoint == null) lastPoint = point;
+        int result = point + (point - lastPoint) * 4;
+        lastPoint = point;
+        if(result >= max || result < 0) return null;
+        return result;
+    }
+
     public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Collection<Color> colors) {
         Rectangle rect = ImageExtensions.getRectangle(screenshot);
         Point leafPoint = ImageExtensions.getSubImagePosition(screenshot, reference, rect, 48);
@@ -77,10 +87,9 @@ public class ChopMiniGame {
 
         Collection<Color> foundColors = new ArrayList<>();
         foundColors.add(new Color(screenshot.getRGB(leafPoint.x, screenshot.getHeight() - 1), false));
-        foundColors.add(new Color(screenshot.getRGB(leafPoint.x + 1, screenshot.getHeight() - 1), false));
-        foundColors.add(new Color(screenshot.getRGB(leafPoint.x - 1, screenshot.getHeight() - 1), false));
-        foundColors.add(new Color(screenshot.getRGB(leafPoint.x - 2, screenshot.getHeight() - 1), false));
-        foundColors.add(new Color(screenshot.getRGB(leafPoint.x + 2, screenshot.getHeight() - 1), false));
+        Integer margin = getSafeMargin(leafPoint.x, screenshot.getWidth());
+        if(margin == null) return Optional.empty();
+        foundColors.add(new Color(screenshot.getRGB(margin, screenshot.getHeight() - 1), false));
         return Optional.of(colors.containsAll(foundColors));
     }
 }
