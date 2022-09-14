@@ -64,8 +64,6 @@ public class ChopMiniGame {
             } else if (Boolean.TRUE.equals(isGood.get())) {
                 System.out.println(messages().getInfoClick());
                 click(autoItX, gameArea.x, gameArea.y);
-            } else {
-                autoItX.sleep(1);
             }
         }
         System.out.println(messages().getInfoForceExit());
