@@ -17,23 +17,21 @@ public class ImageExtensions {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static Point getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, Rectangle searchArea, int threshold) {
-        int maxX = Math.min((int)searchArea.getMaxX(), mainImage.getWidth() - subImage.getWidth());
-        int maxY = Math.min((int)searchArea.getMaxY(), mainImage.getHeight() - subImage.getHeight());
-        return getPoint1(mainImage, subImage, (int) searchArea.getMinX(), (int) searchArea.getMinY(), threshold, maxX, maxY);
+    public static Point getSubImagePosition(BufferedImage mainImage, BufferedImage subImage, int threshold) {
+        return iterateOverAxisY(mainImage, subImage, threshold);
     }
 
-    private static Point getPoint1(BufferedImage mainImage, BufferedImage subImage, int minX, int minY, int threshold, int maxX, int maxY) {
-        return IntStream.range(minY, maxY)
-                .mapToObj(y -> getPoint(mainImage, subImage, minX, threshold, maxX, y))
+    private static Point iterateOverAxisY(BufferedImage mainImage, BufferedImage subImage, int threshold) {
+        return IntStream.range(0, mainImage.getHeight() - subImage.getHeight())
+                .mapToObj(y -> iterateOverAxisX(mainImage, subImage, threshold, y))
                 .parallel()
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
     }
 
-    private static Point getPoint(BufferedImage mainImage, BufferedImage subImage, int minX, int threshold, int maxX, int y) {
-        return IntStream.range(minX, maxX)
+    private static Point iterateOverAxisX(BufferedImage mainImage, BufferedImage subImage, int threshold, int y) {
+        return IntStream.range(0, mainImage.getWidth() - subImage.getWidth())
                 .mapToObj(x -> getPoint(mainImage, subImage, threshold, y, x))
                 .parallel()
                 .filter(Objects::nonNull)
@@ -115,14 +113,5 @@ public class ImageExtensions {
                     other.getHeight()
             ));
         }
-    }
-
-    public static Rectangle getRectangle(BufferedImage bufferedImage) {
-        return new Rectangle(
-                0,
-                0,
-                bufferedImage.getWidth(),
-                bufferedImage.getHeight()
-        );
     }
 }

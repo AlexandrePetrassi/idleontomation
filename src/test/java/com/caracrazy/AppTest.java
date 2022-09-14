@@ -77,7 +77,7 @@ public class AppTest
         Rectangle area = new Rectangle(10, -11, 240, 15);
 
         // When
-        Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, ImageExtensions.getRectangle(screenshot), 8);
+        Point referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
         if (referenceArea == null) Assert.fail();
         Rectangle point = ChopMiniGame.getEnclosingArea(referenceArea, area);
 
