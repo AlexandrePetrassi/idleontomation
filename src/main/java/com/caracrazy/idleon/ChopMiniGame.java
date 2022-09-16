@@ -10,12 +10,8 @@ import com.caracrazy.logging.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
 import static com.caracrazy.localization.Messages.messages;
@@ -31,7 +27,8 @@ public class ChopMiniGame {
     public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
         Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
-        keepClicking(autoItX, leaf, gameArea, keyboard, config);
+        Point goodRange = calculateGoodRange(config.getTargetColors(), Screenshooter.screenshot(gameArea));
+        keepClicking(autoItX, leaf, gameArea, keyboard, goodRange, config);
     }
 
     public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGameData config) {
@@ -39,7 +36,7 @@ public class ChopMiniGame {
         Rectangle windowRect = getWindowRect(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(windowRect);
         Rectangle result = findBiggerMinigameArea(screenshot, config);
-        return new Rectangle(windowRect.x + result.x, windowRect.y + result.y, result.width, result.height);
+        return new Rectangle(windowRect.x + result.x + 10, windowRect.y + result.y, result.width - 63, result.height);
     }
 
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot, ChopMiniGameData config) {
@@ -59,79 +56,133 @@ public class ChopMiniGame {
         );
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, ChopMiniGameData config) {
+    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, Point goodRange, ChopMiniGameData config) {
         while (!keyboard.isKeyPressed(config.getForceExitKey())) {
-            BufferedImage screenshot = Screenshooter.screenshot(gameArea);
-            Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
-            if (!isGood.isPresent()){
-                logger.info(messages().getErrorCursorNotFound());
-            } else if (Boolean.TRUE.equals(isGood.get())) {
-                logger.info(messages().getInfoClick());
-                click(autoItX, gameArea.x, gameArea.y);
-            }
+            tryClick(autoItX, leaf, gameArea, goodRange);
         }
         logger.info(messages().getInfoForceExit());
     }
 
-    private static Integer previousPosition = null;
-    private static int previousDirection = 0;
-    private static Color getBarColor(BufferedImage screenshot, int leafPoint) {
+    public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange) {
+        Game game = new Game();
+        while (true) {
+            BufferedImage screenshot = Screenshooter.screenshot(gameArea);
+            Optional<Boolean> position = isScreenshotGoodToClick(game, screenshot, leaf, goodRange);
+            if (!position.isPresent()) {
+                logger.info(messages().getErrorCursorNotFound());
+                return;
+            } else if (Boolean.TRUE.equals(position.get())){
+                logger.info(messages().getInfoClick());
+                click(autoItX, gameArea.x, gameArea.y);
+                return;
+            }
+        }
+    }
+
+    public static Optional<Boolean> isScreenshotGoodToClick(Game game, BufferedImage screenshot, BufferedImage leaf, Point goodRange) {
+        return ImageExtensions
+                .getSubImagePosition(screenshot, leaf, 64)
+                .flatMap(position -> Optional.of(isInGoodRange(game.update(position.x), goodRange)));
+    }
+
+    public static Color getBarColor(BufferedImage screenshot, int leafPoint) {
         return new Color(screenshot.getRGB(leafPoint, screenshot.getHeight() - 1), false);
     }
 
-    private static Collection<Color> getBarColors(BufferedImage screenshot, int currentPosition, int previousPosition) {
-        int nextPosition = currentPosition - previousPosition;
-        int rightWall = screenshot.getWidth() - 8;
-        int leftWall = 0;
-        Point p = nextPosition > 0
-                ? rangeRight(rightWall, nextPosition, currentPosition)
-                : rangeLeft(leftWall, nextPosition, currentPosition);
-        return Arrays.stream(IntStream.range(p.x, p.y).toArray())
-                .mapToObj(x -> getBarColor(screenshot, x))
-                .collect(Collectors.toCollection(ArrayList::new));
+    public static boolean isInGoodRange(Game game, Point goodRange) {
+        if (game.getPreviousSpeed() == null) return false;
+        return between(goodRange, adjustedCurrentPosition(game)) && between(goodRange, adjustedNextPosition(game));
     }
 
-    private static Point rangeRight(int wall, int next, int current) {
-        int surplus = (next > wall) ? next - wall : 0;
-        int bounce = wall - surplus;
-        int start = Math.min(bounce, current);
-        int end = (bounce > 0 ? wall : next);
-        return new Point(start, end);
+    public static int adjustedCurrentPosition(Game game) {
+        return game.getCurrentPosition() - game.getCurrentDirection();
     }
 
-    private static Point rangeLeft(int wall, int next, int current) {
-        int surplus = (next < wall) ? wall - next : 0;
-        int bounce = wall + surplus;
-        int start = Math.max(bounce, current);
-        int end = (bounce < 0 ? wall : next);
-        return new Point(start, end);
+    public static int adjustedNextPosition(Game game) {
+        return game.getNextPosition() - game.getCurrentDirection();
     }
 
-    public static Optional<Boolean> isGoodToClick(BufferedImage screenshot, BufferedImage reference, Collection<Color> colors) {
-        return ImageExtensions
-                .getSubImagePosition(screenshot, reference, 64)
-                .flatMap(p -> checkClickGoodness(p, screenshot, colors));
+    public static boolean between(Point range, int point) {
+        return point > range.x && point < range.y;
     }
 
-    private static Optional<Boolean> checkClickGoodness(Point leafPoint, BufferedImage screenshot, Collection<Color> colors) {
-        // previousPosition
-        if (previousPosition == null) {
-            previousPosition = leafPoint.x;
-            previousDirection = 0;
-            return Optional.of(false);
+    public static Point calculateGoodRange(Collection<Color> colors, BufferedImage screenshot) {
+        Integer start = null;
+        for (int i = 1; i < screenshot.getWidth() - 9; i++) {
+            Color color = getBarColor(screenshot, i);
+            boolean isGood = isGoodColor(colors, color);
+            if (isGood) {
+                if (start == null) start = i;
+            } else {
+                if (start != null) return new Point(start, i);
+            }
+        }
+        return new Point(0, 0);
+    }
+
+    private static boolean isGoodColor(Collection<Color> colors, Color color) {
+        return colors.stream().parallel().anyMatch(expected -> isSameColor(expected, color));
+    }
+
+    public static boolean isSameColor(Color a, Color b) {
+        return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
+    }
+
+    public static class Game {
+
+        private Integer previousSpeed;
+        public Integer getPreviousSpeed() {
+            return previousSpeed;
         }
 
-        // directionChange
-        int direction = leafPoint.x - previousDirection > 0 ? 1 : 0;
-        if (direction != previousDirection) {
-            previousPosition = leafPoint.x;
-            previousDirection = direction;
-            return Optional.of(false);
+        private Integer previousPosition;
+        public Integer getPreviousPosition() {
+            return previousPosition;
         }
 
-        Collection<Color> foundColors = getBarColors(screenshot, leafPoint.x, previousPosition);
-        previousPosition = leafPoint.x;
-        previousDirection = direction;
-        return Optional.of(colors.containsAll(foundColors));
+        private Integer currentPosition;
+        public Integer getCurrentPosition() {
+            return currentPosition;
+        }
+
+        private void setCurrentPosition(Integer newPosition) {
+            previousSpeed = previousPosition == null ? null : currentPosition - previousPosition;
+            previousPosition = currentPosition;
+            currentPosition = newPosition;
+        }
+
+        public Game update(Integer newPosition) {
+            setCurrentPosition(newPosition);
+            return this;
+        }
+
+        public Integer getCurrentSpeed() {
+            return getCurrentPosition() - getPreviousPosition();
+        }
+
+        public Integer getNextPosition() {
+            return getCurrentPosition() + getCurrentSpeed();
+        }
+
+        public boolean isSwitchingDirection() {
+            return getCurrentDirection() != getPreviousDirection();
+        }
+
+        public int getCurrentDirection() {
+            return (int) Math.signum(getCurrentSpeed());
+        }
+
+        public int getPreviousDirection() {
+            return (int)  Math.signum(getPreviousSpeed());
+        }
+
+        @Override
+        public String toString() {
+            return "Game{" +
+                    "previousSpeed=" + previousSpeed +
+                    ", previousPosition=" + previousPosition +
+                    ", currentPosition=" + currentPosition +
+                    '}';
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.caracrazy.graphics.ImageLoader;
 import com.caracrazy.testing.TestImageLoader;
 import com.caracrazy.yaml.YamlLoader;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.experimental.theories.DataPoints;
@@ -65,12 +66,12 @@ public class ChopMiniGameTest {
         @Theory
         public void shouldFindLeaf(final int index) {
             // Given
-            BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
-            BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
-            Collection<Color> targetColors = config.getChopMiniGame().getTargetColors();
+            BufferedImage screenshot = TestImageLoader
+                    .loadResource("inputs/chop/minigame (" + index + ").png")
+                    .getSubimage(200, 129, 250, 28);
 
             // When
-            Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, targetColors);
+            Optional<Point> result = ImageExtensions.getSubImagePosition(screenshot, leaf, 64);
 
             // Then
             assertTrue(result.isPresent());
@@ -87,15 +88,15 @@ public class ChopMiniGameTest {
         @Theory
         public void shouldNotFindLeaf(final int index) {
             // Given
-            BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/minigame (" + index + ").png");
-            BufferedImage subImage = screenshot.getSubimage(200, 129, 250, 28);
-            Collection<Color> targetColors = config.getChopMiniGame().getTargetColors();
+            BufferedImage screenshot = TestImageLoader
+                    .loadResource("inputs/chop/minigame (" + index + ").png")
+                    .getSubimage(200, 129, 250, 28);
 
             // When
-            Optional<Boolean> result = ChopMiniGame.isGoodToClick(subImage, leaf, targetColors);
+            Optional<Point> result = ImageExtensions.getSubImagePosition(screenshot, leaf, 64);
 
             // Then
-            assertFalse(result.isPresent());
+            assertFalse("Result is: " + result, result.isPresent());
         }
     }
 
@@ -110,13 +111,51 @@ public class ChopMiniGameTest {
         public void shouldFindLeafInCloudyEnvironment(final int index) {
             // Given
             BufferedImage screenshot = TestImageLoader.loadResource("inputs/chop/cloudy (" + index + ").png");
-            Collection<Color> targetColors = config.getChopMiniGame().getTargetColors();
 
             // When
-            Optional<Boolean> result = ChopMiniGame.isGoodToClick(screenshot, leaf, targetColors);
+            Optional<Point> result = ImageExtensions.getSubImagePosition(screenshot, leaf, 64);
 
             // Then
             assertTrue(result.isPresent());
+        }
+    }
+
+    @RunWith(Theories.class)
+    public static class ClickingTest
+    {
+        public static ChopMiniGame.Game game = new ChopMiniGame.Game();
+
+        @DataPoints
+        public static final int[] screenshots =
+                IntStream.range(1, 128).toArray();
+
+        @Theory
+        public void shouldClickTheRightTime(final int index) {
+            // Given
+            BufferedImage screenshot = TestImageLoader
+                    .loadResource("inputs/chop/cloudy (" + index + ").png")
+                    .getSubimage(71, 64, 232, 28);
+            Collection<Color> colors = config.getChopMiniGame().getTargetColors();
+            Optional<Point> point = ImageExtensions.getSubImagePosition(screenshot, leaf, 64);
+            if(!point.isPresent()) System.out.println(index + " -> " + point + "| Nothing to show here");
+            Assume.assumeTrue(point.isPresent());
+
+            // When
+            Point p = point.get();
+            Point goodRange = ChopMiniGame.calculateGoodRange(colors, screenshot);
+            Optional<Boolean> actual = ChopMiniGame.isScreenshotGoodToClick(game, screenshot, leaf, goodRange);
+            System.out.println(index + " -> " + actual + "|" + ChopMiniGame.getBarColor(screenshot, p.x) + "|" + game);
+//            Optional<Boolean> expected = index < 5 ? Optional.of(false) : Optional.of(colors.contains(ChopMiniGame.getBarColor(screenshot, p.x)));
+//
+//            // Then
+//            assertEquals(
+//                    "\n    Index: " + index +
+//                            "\n    Game: " + game +
+//                            "\n    Expected: " + expected +
+//                            "\n    Result: " + actual +
+//                            "\n",
+//                    expected,
+//                    actual);
         }
     }
 }
