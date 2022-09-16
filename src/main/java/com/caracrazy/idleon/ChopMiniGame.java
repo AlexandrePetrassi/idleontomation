@@ -5,6 +5,8 @@ import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.automation.robot.Screenshooter;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
+import com.caracrazy.logging.Logger;
+import com.caracrazy.logging.LoggerFactory;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,6 +21,8 @@ import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
 import static com.caracrazy.localization.Messages.messages;
 
 public class ChopMiniGame {
+
+    private static final Logger logger = LoggerFactory.create();
 
     private ChopMiniGame() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
@@ -60,13 +64,13 @@ public class ChopMiniGame {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             Optional<Boolean> isGood = isGoodToClick(screenshot, leaf, config.getTargetColors());
             if (!isGood.isPresent()){
-                System.out.println(messages().getErrorCursorNotFound());
+                logger.info(messages().getErrorCursorNotFound());
             } else if (Boolean.TRUE.equals(isGood.get())) {
-                System.out.println(messages().getInfoClick());
+                logger.info(messages().getInfoClick());
                 click(autoItX, gameArea.x, gameArea.y);
             }
         }
-        System.out.println(messages().getInfoForceExit());
+        logger.info(messages().getInfoForceExit());
     }
 
     private static Integer previousPosition = null;
