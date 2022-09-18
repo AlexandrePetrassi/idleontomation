@@ -123,7 +123,7 @@ public class ChopMiniGameTest {
     @RunWith(Theories.class)
     public static class ClickingTest
     {
-        public static ChopMiniGame.Game game = new ChopMiniGame.Game();
+        public static ChopMiniGameState game = new ChopMiniGameState();
 
         @DataPoints
         public static final int[] screenshots =

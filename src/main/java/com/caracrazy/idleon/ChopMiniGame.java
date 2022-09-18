@@ -74,14 +74,14 @@ public class ChopMiniGame {
     }
 
     public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange, Collection<Color> colors) {
-        Game game = new Game();
+        ChopMiniGameState game = new ChopMiniGameState();
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             if(update(game, gameArea, goodRange, screenshot, leaf, autoItX, colors)) return;
         }
     }
 
-    public static boolean update(Game game, Rectangle gameArea, Point goodRange, BufferedImage screenshot, BufferedImage leaf, AutoItX autoItX, Collection<Color> colors) {
+    public static boolean update(ChopMiniGameState game, Rectangle gameArea, Point goodRange, BufferedImage screenshot, BufferedImage leaf, AutoItX autoItX, Collection<Color> colors) {
         Optional<Boolean> position = isScreenshotGoodToClick(game, screenshot, leaf, goodRange, colors);
         if (!position.isPresent()) {
             return breakLoop();
@@ -103,11 +103,11 @@ public class ChopMiniGame {
         return true;
     }
 
-    public static boolean isGoodClick(Game game, int point, Point goodRange, BufferedImage screenshot, Collection<Color> colors) {
+    public static boolean isGoodClick(ChopMiniGameState game, int point, Point goodRange, BufferedImage screenshot, Collection<Color> colors) {
         return isInGoodRange(game.update(point), goodRange) && isGoodColor(colors, getBarColor(screenshot, point));
     }
 
-    public static Optional<Boolean> isScreenshotGoodToClick(Game game, BufferedImage screenshot, BufferedImage leaf, Point goodRange, Collection<Color> colors) {
+    public static Optional<Boolean> isScreenshotGoodToClick(ChopMiniGameState game, BufferedImage screenshot, BufferedImage leaf, Point goodRange, Collection<Color> colors) {
         return ImageExtensions
                 .getSubImagePosition(screenshot, leaf, 64)
                 .map(point -> isGoodClick(game, point.x, goodRange, screenshot, colors));
@@ -117,16 +117,16 @@ public class ChopMiniGame {
         return new Color(screenshot.getRGB(leafPoint, screenshot.getHeight() - 1), false);
     }
 
-    public static boolean isInGoodRange(Game game, Point goodRange) {
+    public static boolean isInGoodRange(ChopMiniGameState game, Point goodRange) {
         if (game.getPreviousSpeed() == null) return false;
         return between(goodRange, adjustedCurrentPosition(game)) && between(goodRange, adjustedNextPosition(game));
     }
 
-    public static int adjustedCurrentPosition(Game game) {
+    public static int adjustedCurrentPosition(ChopMiniGameState game) {
         return game.getCurrentPosition() - game.getCurrentDirection() * 2;
     }
 
-    public static int adjustedNextPosition(Game game) {
+    public static int adjustedNextPosition(ChopMiniGameState game) {
         return game.getNextPosition() + game.getCurrentDirection() * 2;
     }
 
@@ -163,118 +163,4 @@ public class ChopMiniGame {
         return a.getRed() == b.getRed() && a.getGreen() == b.getGreen() && a.getBlue() == b.getBlue();
     }
 
-    public static class Game {
-
-        private Integer previousSpeed;
-        public Integer getPreviousSpeed() {
-            return previousSpeed;
-        }
-
-        private Integer currentSpeed;
-        public Integer getCurrentSpeed() {
-            return currentSpeed;
-        }
-
-        private Integer previousPosition;
-        public Integer getPreviousPosition() {
-            return previousPosition;
-        }
-
-        private Integer currentPosition;
-        public Integer getCurrentPosition() {
-            return currentPosition;
-        }
-
-        private Long currentTime;
-        public Long getCurrentTime() {
-            return currentTime;
-        }
-
-        private Long previousTime;
-        public Long getPreviousTime() {
-            return previousTime;
-        }
-
-        private Long previousDeltaTime;
-        public Long getPreviousDeltaTime() {
-            return previousDeltaTime;
-        }
-
-        private Long currentDeltaTime;
-        public Long getCurrentDeltaTime() {
-            return currentDeltaTime;
-        }
-
-        private Integer previousDeltaPosition;
-        public Integer getPreviousDeltaPosition() {
-            return previousDeltaPosition;
-        }
-
-        private Integer currentDeltaPosition;
-
-        private Integer calculateDeltaPosition() {
-            if (previousPosition == null || currentPosition == null) return null;
-            return currentPosition - previousPosition;
-        }
-
-        private Long calculateDeltaTime() {
-            if (previousTime == null || currentTime == null) return null;
-            return currentTime - previousTime;
-        }
-
-        private Integer calculateCurrentSpeed() {
-            if (currentDeltaPosition == null) return null;
-            if (currentDeltaTime == null || currentDeltaTime == 0) return null;
-            return (int) (currentDeltaPosition / currentDeltaTime);
-        }
-
-        private void setCurrentPosition(Integer newPosition) {
-            previousPosition = currentPosition;
-            previousTime = currentTime;
-            previousDeltaTime = currentDeltaTime;
-            previousDeltaPosition = currentDeltaPosition;
-            previousSpeed = currentSpeed;
-
-            currentPosition = newPosition;
-            currentTime = System.nanoTime();
-            currentDeltaTime = calculateDeltaTime();
-            currentDeltaPosition = calculateDeltaPosition();
-            currentSpeed = calculateCurrentSpeed();
-        }
-
-        public Game update(Integer newPosition) {
-            setCurrentPosition(newPosition);
-            return this;
-        }
-
-        public Long averageDeltaTime() {
-            if (currentDeltaTime == null || previousDeltaTime == null) return null;
-            return currentDeltaTime / previousDeltaTime;
-        }
-
-        public Integer getNextPosition() {
-            return getCurrentPosition() + (int) (getCurrentSpeed() * averageDeltaTime());
-        }
-
-        public boolean isSwitchingDirection() {
-            return getCurrentDirection() != getPreviousDirection();
-        }
-
-        public int getCurrentDirection() {
-            return (int) Math.signum(getCurrentSpeed());
-        }
-
-        public int getPreviousDirection() {
-            return (int)  Math.signum(getPreviousSpeed());
-        }
-
-        @Override
-        public String toString() {
-            return "Game{" +
-                    "previousSpeed=" + previousSpeed +
-                    ", previousPosition=" + previousPosition +
-                    ", currentPosition=" + currentPosition +
-                    '}';
-        }
-    }
 }
