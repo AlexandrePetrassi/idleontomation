@@ -18,7 +18,7 @@ import static com.caracrazy.localization.Messages.messages;
 
 public class ChopMiniGame {
 
-    private static final Logger logger = LoggerFactory.create();
+    private static final Logger logger = LoggerFactory.create(ChopMiniGame.class.getName());
 
     private ChopMiniGame() {
         throw new IllegalStateException(messages().getErrorUtilityClass());
