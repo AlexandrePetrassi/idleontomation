@@ -143,7 +143,7 @@ public class ChopMiniGameTest {
             // When
             Point p = point.get();
             Point goodRange = ChopMiniGame.calculateGoodRange(colors, screenshot);
-            Optional<Boolean> actual = ChopMiniGame.isScreenshotGoodToClick(game, screenshot, leaf, goodRange);
+            Optional<Boolean> actual = ChopMiniGame.isScreenshotGoodToClick(game, screenshot, leaf, goodRange, colors);
             System.out.println(index + " -> " + actual + "|" + ChopMiniGame.getBarColor(screenshot, p.x) + "|" + game);
 //            Optional<Boolean> expected = index < 5 ? Optional.of(false) : Optional.of(colors.contains(ChopMiniGame.getBarColor(screenshot, p.x)));
 //

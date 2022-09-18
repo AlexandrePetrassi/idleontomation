@@ -24,11 +24,19 @@ public class ChopMiniGame {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
+    public static void innerStart(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
         Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
+        if (gameArea == null) return;
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
-        Point goodRange = calculateGoodRange(config.getTargetColors(), Screenshooter.screenshot(gameArea));
-        keepClicking(autoItX, leaf, gameArea, keyboard, goodRange, config);
+        Point goodRange = calculateGoodRangeWithBorder(config.getTargetColors(), Screenshooter.screenshot(gameArea));
+        keepClicking(autoItX, leaf, gameArea, keyboard, goodRange, config, config.getTargetColors());
+    }
+
+    public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
+        while (!keyboard.isKeyPressed(config.getForceExitKey())) {
+            innerStart(autoItX, keyboard, config);
+        }
+        logger.info(messages().getInfoForceExit());
     }
 
     public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGameData config) {
@@ -36,7 +44,8 @@ public class ChopMiniGame {
         Rectangle windowRect = getWindowRect(autoItX, windowName);
         BufferedImage screenshot = Screenshooter.screenshot(windowRect);
         Rectangle result = findBiggerMinigameArea(screenshot, config);
-        return new Rectangle(windowRect.x + result.x + 10, windowRect.y + result.y, result.width - 63, result.height);
+        if (result == null) return null;
+        return new Rectangle(windowRect.x + result.x - 1, windowRect.y + result.y, 230, result.height);
     }
 
     public static Rectangle findBiggerMinigameArea(BufferedImage screenshot, ChopMiniGameData config) {
@@ -44,7 +53,8 @@ public class ChopMiniGame {
         Rectangle area = new Rectangle(10, -11, 240, 15);
         Optional<Point> referenceArea = ImageExtensions.getSubImagePosition(screenshot, reference, 8);
         if (referenceArea.isPresent()) return getEnclosingArea(referenceArea.get(), area);
-        throw new IllegalStateException(messages().getErrorFrameNotFound());
+        logger.info(messages().getErrorFrameNotFound());
+        return null;
     }
 
     public static Rectangle getEnclosingArea(Point point, Rectangle area) {
@@ -56,33 +66,51 @@ public class ChopMiniGame {
         );
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, Point goodRange, ChopMiniGameData config) {
+    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, Point goodRange, ChopMiniGameData config, Collection<Color> colors) {
         while (!keyboard.isKeyPressed(config.getForceExitKey())) {
-            tryClick(autoItX, leaf, gameArea, goodRange);
+            tryClick(autoItX, leaf, gameArea, goodRange, colors);
         }
         logger.info(messages().getInfoForceExit());
     }
 
-    public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange) {
+    public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange, Collection<Color> colors) {
         Game game = new Game();
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
-            Optional<Boolean> position = isScreenshotGoodToClick(game, screenshot, leaf, goodRange);
-            if (!position.isPresent()) {
-                logger.info(messages().getErrorCursorNotFound());
-                return;
-            } else if (Boolean.TRUE.equals(position.get())){
-                logger.info(messages().getInfoClick());
-                click(autoItX, gameArea.x, gameArea.y);
-                return;
-            }
+            if(update(game, gameArea, goodRange, screenshot, leaf, autoItX, colors)) return;
         }
     }
 
-    public static Optional<Boolean> isScreenshotGoodToClick(Game game, BufferedImage screenshot, BufferedImage leaf, Point goodRange) {
+    public static boolean update(Game game, Rectangle gameArea, Point goodRange, BufferedImage screenshot, BufferedImage leaf, AutoItX autoItX, Collection<Color> colors) {
+        Optional<Boolean> position = isScreenshotGoodToClick(game, screenshot, leaf, goodRange, colors);
+        if (!position.isPresent()) {
+            return breakLoop();
+        } else if (Boolean.TRUE.equals(position.get())) {
+            return clickTheScreen(autoItX, gameArea);
+        }
+        return false;
+    }
+
+    public static boolean breakLoop() {
+        logger.info(messages().getErrorCursorNotFound());
+        return true;
+    }
+
+    public static boolean clickTheScreen(AutoItX autoItX, Rectangle gameArea) {
+        logger.info(messages().getInfoClick());
+        click(autoItX, gameArea.x, gameArea.y);
+        autoItX.sleep(500);
+        return true;
+    }
+
+    public static boolean isGoodClick(Game game, int point, Point goodRange, BufferedImage screenshot, Collection<Color> colors) {
+        return isInGoodRange(game.update(point), goodRange) && isGoodColor(colors, getBarColor(screenshot, point));
+    }
+
+    public static Optional<Boolean> isScreenshotGoodToClick(Game game, BufferedImage screenshot, BufferedImage leaf, Point goodRange, Collection<Color> colors) {
         return ImageExtensions
                 .getSubImagePosition(screenshot, leaf, 64)
-                .flatMap(position -> Optional.of(isInGoodRange(game.update(position.x), goodRange)));
+                .map(point -> isGoodClick(game, point.x, goodRange, screenshot, colors));
     }
 
     public static Color getBarColor(BufferedImage screenshot, int leafPoint) {
@@ -95,15 +123,22 @@ public class ChopMiniGame {
     }
 
     public static int adjustedCurrentPosition(Game game) {
-        return game.getCurrentPosition() - game.getCurrentDirection();
+        return game.getCurrentPosition() - game.getCurrentDirection() * 2;
     }
 
     public static int adjustedNextPosition(Game game) {
-        return game.getNextPosition() - game.getCurrentDirection();
+        return game.getNextPosition() + game.getCurrentDirection() * 2;
     }
 
     public static boolean between(Point range, int point) {
         return point > range.x && point < range.y;
+    }
+
+    public static Point calculateGoodRangeWithBorder(Collection<Color> colors, BufferedImage screenshot) {
+        Point point = calculateGoodRange(colors, screenshot);
+        if (point.x <= 1) return new Point(-point.y, point.y);
+        if (point.y >= screenshot.getWidth() - 9) return new Point(point.x, point.y + (point.y - point.x));
+        return point;
     }
 
     public static Point calculateGoodRange(Collection<Color> colors, BufferedImage screenshot) {
