@@ -11,4 +11,16 @@ public final class LoggerFactory {
     public static Logger create() {
         return new ConcreteLogger();
     }
+
+    public static Logger create(String className) {
+        return new ConcreteLogger(className);
+    }
+
+    public static Logger create(String className, String bundle) {
+        return new ConcreteLogger(className, bundle);
+    }
+
+    public static Logger createAnonymous(String bundle) {
+        return new ConcreteLogger("", bundle);
+    }
 }
