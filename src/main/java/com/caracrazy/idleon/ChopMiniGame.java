@@ -118,16 +118,16 @@ public class ChopMiniGame {
     }
 
     public static boolean isInGoodRange(ChopMiniGameState game, Point goodRange) {
-        if (game.getPreviousSpeed() == null) return false;
+        if (game.getCurrent().getSpeed() == null) return false;
         return between(goodRange, adjustedCurrentPosition(game)) && between(goodRange, adjustedNextPosition(game));
     }
 
     public static int adjustedCurrentPosition(ChopMiniGameState game) {
-        return game.getCurrentPosition() - game.getCurrentDirection() * 2;
+        return game.getCurrent().getPosition() - game.getCurrent().getDirection() * 2;
     }
 
     public static int adjustedNextPosition(ChopMiniGameState game) {
-        return game.getNextPosition() + game.getCurrentDirection() * 2;
+        return game.getNextPosition() + game.getCurrent().getDirection() * 2;
     }
 
     public static boolean between(Point range, int point) {
