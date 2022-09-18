@@ -24,7 +24,7 @@ public class ChopMiniGame {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static void innerStart(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
+    public static void playSingleRound(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
         Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
         if (gameArea == null) return;
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
@@ -34,7 +34,7 @@ public class ChopMiniGame {
 
     public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
         while (!keyboard.isKeyPressed(config.getForceExitKey())) {
-            innerStart(autoItX, keyboard, config);
+            playSingleRound(autoItX, keyboard, config);
         }
         logger.info(messages().getInfoForceExit());
     }
