@@ -170,6 +170,11 @@ public class ChopMiniGame {
             return previousSpeed;
         }
 
+        private Integer currentSpeed;
+        public Integer getCurrentSpeed() {
+            return currentSpeed;
+        }
+
         private Integer previousPosition;
         public Integer getPreviousPosition() {
             return previousPosition;
@@ -180,10 +185,61 @@ public class ChopMiniGame {
             return currentPosition;
         }
 
+        private Long currentTime;
+        public Long getCurrentTime() {
+            return currentTime;
+        }
+
+        private Long previousTime;
+        public Long getPreviousTime() {
+            return previousTime;
+        }
+
+        private Long previousDeltaTime;
+        public Long getPreviousDeltaTime() {
+            return previousDeltaTime;
+        }
+
+        private Long currentDeltaTime;
+        public Long getCurrentDeltaTime() {
+            return currentDeltaTime;
+        }
+
+        private Integer previousDeltaPosition;
+        public Integer getPreviousDeltaPosition() {
+            return previousDeltaPosition;
+        }
+
+        private Integer currentDeltaPosition;
+
+        private Integer calculateDeltaPosition() {
+            if (previousPosition == null || currentPosition == null) return null;
+            return currentPosition - previousPosition;
+        }
+
+        private Long calculateDeltaTime() {
+            if (previousTime == null || currentTime == null) return null;
+            return currentTime - previousTime;
+        }
+
+        private Integer calculateCurrentSpeed() {
+            if (currentDeltaPosition == null) return null;
+            if (currentDeltaTime == null || currentDeltaTime == 0) return null;
+            return (int) (currentDeltaPosition / currentDeltaTime);
+        }
+
         private void setCurrentPosition(Integer newPosition) {
-            previousSpeed = previousPosition == null ? null : currentPosition - previousPosition;
             previousPosition = currentPosition;
+            previousTime = currentTime;
+            previousDeltaTime = currentDeltaTime;
+            previousDeltaPosition = currentDeltaPosition;
+            previousSpeed = currentSpeed;
+
             currentPosition = newPosition;
+            currentTime = System.nanoTime();
+            currentDeltaTime = calculateDeltaTime();
+            currentDeltaPosition = calculateDeltaPosition();
+            currentSpeed = calculateCurrentSpeed();
         }
 
         public Game update(Integer newPosition) {
@@ -191,12 +247,13 @@ public class ChopMiniGame {
             return this;
         }
 
-        public Integer getCurrentSpeed() {
-            return getCurrentPosition() - getPreviousPosition();
+        public Long averageDeltaTime() {
+            if (currentDeltaTime == null || previousDeltaTime == null) return null;
+            return currentDeltaTime / previousDeltaTime;
         }
 
         public Integer getNextPosition() {
-            return getCurrentPosition() + getCurrentSpeed();
+            return getCurrentPosition() + (int) (getCurrentSpeed() * averageDeltaTime());
         }
 
         public boolean isSwitchingDirection() {
