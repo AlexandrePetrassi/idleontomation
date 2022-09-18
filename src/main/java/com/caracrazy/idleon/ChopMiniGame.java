@@ -98,7 +98,7 @@ public class ChopMiniGame {
 
     public static boolean clickTheScreen(AutoItX autoItX, Rectangle gameArea) {
         logger.info(messages().getInfoClick());
-        click(autoItX, gameArea.x, gameArea.y);
+        click(autoItX, (int) gameArea.getMaxX(), (int) gameArea.getMaxY());
         autoItX.sleep(500);
         return true;
     }
