@@ -21,7 +21,7 @@ public final class ChopMiniGameState {
     }
 
     public Integer getNextPosition() {
-        return current.getPosition() + (int) (current.getSpeed() * current.getAverageDeltaTime());
+        return current.getPosition() + (int) (current.getSpeed() * current.getDeltaTime());
     }
 
     @Override
