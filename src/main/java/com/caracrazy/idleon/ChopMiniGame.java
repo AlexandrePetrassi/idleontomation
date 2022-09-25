@@ -149,7 +149,7 @@ public class ChopMiniGame {
             if (isGood) {
                 if (start == null) start = i;
             } else {
-                if (start != null) return new Point(start, i);
+                if (start != null) return new Point(start, i-1);
             }
         }
         return new Point(0, 0);
