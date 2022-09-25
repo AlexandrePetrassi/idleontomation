@@ -75,6 +75,7 @@ public class ChopMiniGame {
 
     public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange, Collection<Color> colors) {
         ChopMiniGameState game = new ChopMiniGameState();
+        autoItX.sleep(500);
         while (true) {
             BufferedImage screenshot = Screenshooter.screenshot(gameArea);
             if(update(game, gameArea, goodRange, screenshot, leaf, autoItX, colors)) return;
@@ -99,7 +100,6 @@ public class ChopMiniGame {
     public static boolean clickTheScreen(AutoItX autoItX, Rectangle gameArea) {
         logger.info(messages().getInfoClick());
         click(autoItX, (int) gameArea.getMaxX(), (int) gameArea.getMaxY());
-        autoItX.sleep(500);
         return true;
     }
 
