@@ -1,8 +1,7 @@
 package com.caracrazy.idleon;
 
-import autoitx4java.AutoItX;
+import com.caracrazy.automation.Automator;
 import com.caracrazy.automation.jnativehook.Keyboard;
-import com.caracrazy.automation.robot.Screenshooter;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
 import com.caracrazy.logging.Logger;
@@ -13,7 +12,6 @@ import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.Optional;
 
-import static com.caracrazy.automation.autoit.AutoItXExtensions.*;
 import static com.caracrazy.localization.Messages.messages;
 
 public class ChopMiniGame {
@@ -24,25 +22,25 @@ public class ChopMiniGame {
         throw new IllegalStateException(messages().getErrorUtilityClass());
     }
 
-    public static void playSingleRound(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
-        Rectangle gameArea = findCriticalMinigameArea(autoItX, config.getAppName(), config);
+    public static void playSingleRound(Automator automator, Keyboard keyboard, ChopMiniGameData config) {
+        Rectangle gameArea = findCriticalMinigameArea(automator, config.getAppName(), config);
         if (gameArea == null) return;
         BufferedImage leaf = ImageLoader.loadResource(config.getCursorReference());
-        Point goodRange = calculateGoodRangeWithBorder(config.getTargetColors(), Screenshooter.screenshot(gameArea));
-        keepClicking(autoItX, leaf, gameArea, keyboard, goodRange, config, config.getTargetColors());
+        Point goodRange = calculateGoodRangeWithBorder(config.getTargetColors(), automator.screenshot(gameArea));
+        keepClicking(automator, leaf, gameArea, keyboard, goodRange, config, config.getTargetColors());
     }
 
-    public static void start(AutoItX autoItX, Keyboard keyboard, ChopMiniGameData config) {
+    public static void start(Automator automator, Keyboard keyboard, ChopMiniGameData config) {
         while (!keyboard.isKeyPressed(config.getForceExitKey())) {
-            playSingleRound(autoItX, keyboard, config);
+            playSingleRound(automator, keyboard, config);
         }
         logger.info(messages().getInfoForceExit());
     }
 
-    public static Rectangle findCriticalMinigameArea(AutoItX autoItX, String windowName, ChopMiniGameData config) {
-        focusWindow(autoItX, windowName);
-        Rectangle windowRect = getWindowRect(autoItX, windowName);
-        BufferedImage screenshot = Screenshooter.screenshot(windowRect);
+    public static Rectangle findCriticalMinigameArea(Automator automator, String windowName, ChopMiniGameData config) {
+        automator.focusWindow(windowName);
+        Rectangle windowRect = automator.getWindowRect(windowName);
+        BufferedImage screenshot = automator.screenshot(windowRect);
         Rectangle result = findBiggerMinigameArea(screenshot, config);
         if (result == null) return null;
         return new Rectangle(windowRect.x + result.x - 1, windowRect.y + result.y, 230, result.height);
@@ -66,28 +64,28 @@ public class ChopMiniGame {
         );
     }
 
-    public static void keepClicking(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, Point goodRange, ChopMiniGameData config, Collection<Color> colors) {
+    public static void keepClicking(Automator automator, BufferedImage leaf, Rectangle gameArea, Keyboard keyboard, Point goodRange, ChopMiniGameData config, Collection<Color> colors) {
         while (!keyboard.isKeyPressed(config.getForceExitKey())) {
-            tryClick(autoItX, leaf, gameArea, goodRange, colors);
+            tryClick(automator, leaf, gameArea, goodRange, colors);
         }
         logger.info(messages().getInfoForceExit());
     }
 
-    public static void tryClick(AutoItX autoItX, BufferedImage leaf, Rectangle gameArea, Point goodRange, Collection<Color> colors) {
+    public static void tryClick(Automator automator, BufferedImage leaf, Rectangle gameArea, Point goodRange, Collection<Color> colors) {
         ChopMiniGameState game = new ChopMiniGameState();
-        autoItX.sleep(500);
+        automator.sleep(500);
         while (true) {
-            BufferedImage screenshot = Screenshooter.screenshot(gameArea);
-            if(update(game, gameArea, goodRange, screenshot, leaf, autoItX, colors)) return;
+            BufferedImage screenshot = automator.screenshot(gameArea);
+            if(update(game, gameArea, goodRange, screenshot, leaf, automator, colors)) return;
         }
     }
 
-    public static boolean update(ChopMiniGameState game, Rectangle gameArea, Point goodRange, BufferedImage screenshot, BufferedImage leaf, AutoItX autoItX, Collection<Color> colors) {
+    public static boolean update(ChopMiniGameState game, Rectangle gameArea, Point goodRange, BufferedImage screenshot, BufferedImage leaf, Automator automator, Collection<Color> colors) {
         Optional<Boolean> position = isScreenshotGoodToClick(game, screenshot, leaf, goodRange, colors);
         if (!position.isPresent()) {
             return breakLoop();
         } else if (Boolean.TRUE.equals(position.get())) {
-            return clickTheScreen(autoItX, gameArea);
+            return clickTheScreen(automator, gameArea);
         }
         return false;
     }
@@ -97,9 +95,9 @@ public class ChopMiniGame {
         return true;
     }
 
-    public static boolean clickTheScreen(AutoItX autoItX, Rectangle gameArea) {
+    public static boolean clickTheScreen(Automator automator, Rectangle gameArea) {
         logger.info(messages().getInfoClick());
-        click(autoItX, (int) gameArea.getMaxX(), (int) gameArea.getMaxY());
+        automator.click((int) gameArea.getMaxX(), (int) gameArea.getMaxY());
         return true;
     }
 

@@ -1,27 +1,29 @@
 package com.caracrazy.automation.autoit;
 
 import autoitx4java.AutoItX;
+import com.caracrazy.automation.Automator;
+import com.caracrazy.automation.robot.RobotFactory;
 import com.jacob.com.LibraryLoader;
 
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.caracrazy.localization.Messages.messages;
+public enum AutoItXFactory {
 
-public class AutoItXFactory {
+    INSTANCE();
 
-    private AutoItXFactory() {
-        throw new IllegalStateException(messages().getErrorUtilityClass());
-    }
+    private final Map<AutoItXData, Automator> cache = new HashMap<>();
 
-    private static String getDllPath(AutoItXData config) {
+    private String getDllPath(AutoItXData config) {
         return config.getDll().getDirectory();
     }
 
-    private static String getDllName(AutoItXData config) {
+    private String getDllName(AutoItXData config) {
         return config.getDll().getName();
     }
 
-    private static String getDllPath(String dllDirectory, String dllName) {
+    private String resolveDllPath(String dllDirectory, String dllName) {
         return Paths
                 .get(dllDirectory)
                 .resolve(dllName)
@@ -29,17 +31,22 @@ public class AutoItXFactory {
                 .toString();
     }
 
-    private static void loadJacob(String dllPath) {
+    private void loadJacob(String dllPath) {
         System.setProperty(LibraryLoader.JACOB_DLL_PATH, dllPath);
         LibraryLoader.loadJacobLibrary();
     }
 
-    private static AutoItX loadAutoIt(String dllDirectory, String dllName) {
-        loadJacob(getDllPath(dllDirectory, dllName));
+    private AutoItX loadAutoItX(String dllDirectory, String dllName) {
+        loadJacob(resolveDllPath(dllDirectory, dllName));
         return new AutoItX();
     }
 
-    public static AutoItX create(AutoItXData config) {
-        return loadAutoIt(getDllPath(config), getDllName(config));
+    private Automator createAutomator(AutoItXData config) {
+        AutoItX autoItX = loadAutoItX(getDllPath(config), getDllName(config));
+        return new AutoItXAutomator(autoItX, RobotFactory.create());
+    }
+
+    public Automator create(AutoItXData config) {
+        return cache.computeIfAbsent(config, this::createAutomator);
     }
 }

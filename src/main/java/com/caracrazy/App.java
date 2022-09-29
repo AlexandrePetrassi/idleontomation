@@ -1,6 +1,6 @@
 package com.caracrazy;
 
-import autoitx4java.AutoItX;
+import com.caracrazy.automation.Automator;
 import com.caracrazy.automation.autoit.AutoItXFactory;
 import com.caracrazy.automation.jnativehook.KeyboardListener;
 import com.caracrazy.configuration.ConfigurationData;
@@ -12,7 +12,7 @@ public class App {
     public static void main(String[] args) {
         String configFile = ((args.length > 0) ? args[0] : "config") + ".yaml";
         ConfigurationData config = ConfigurationFactory.create(configFile);
-        AutoItX autoItX = AutoItXFactory.create(config.getAutoItX());
+        Automator autoItX = AutoItXFactory.INSTANCE.create(config.getAutoItX());
         KeyboardListener.use(keyboard -> ChopMiniGame.start(autoItX, keyboard, config.getChopMiniGame()));
     }
 }
