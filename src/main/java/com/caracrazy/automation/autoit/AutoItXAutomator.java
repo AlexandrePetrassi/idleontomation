@@ -48,4 +48,12 @@ public class AutoItXAutomator implements Automator {
         autoItX.mouseDown("left");
         autoItX.mouseUp("left");
     }
+
+    @Override
+    public void drag(int x1, int y1, int x2, int y2) {
+        autoItX.mouseMove(x1, y1, 0);
+        autoItX.mouseDown("left");
+        autoItX.mouseMove(x2, y2, Math.abs(x2 - x1));
+        autoItX.mouseUp("left");
+    }
 }
