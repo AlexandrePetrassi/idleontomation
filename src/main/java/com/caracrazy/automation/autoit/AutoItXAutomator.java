@@ -4,7 +4,9 @@ import autoitx4java.AutoItX;
 import com.caracrazy.automation.Automator;
 
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 
 public class AutoItXAutomator implements Automator {
 
@@ -51,9 +53,21 @@ public class AutoItXAutomator implements Automator {
 
     @Override
     public void drag(int x1, int y1, int x2, int y2) {
-        autoItX.mouseMove(x1, y1, 0);
-        autoItX.mouseDown("left");
-        autoItX.mouseMove(x2, y2, Math.abs(x2 - x1));
-        autoItX.mouseUp("left");
+        dragHold(x1, y1, x2, y2);
+        robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+    }
+
+    @Override
+    public void dragHold(int x1, int y1, int x2, int y2) {
+        float direction = Math.signum(x2 - (float)x1);
+        int iterations = Math.abs(x2 - x1);
+
+        robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        robot.mouseMove(x1, y1);
+
+        IntStream.range(0, iterations)
+                .map(i -> (int)(i * direction))
+                .parallel()
+                .forEach(i -> robot.mouseMove(x1 + i, y2));
     }
 }

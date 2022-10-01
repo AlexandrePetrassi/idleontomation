@@ -14,20 +14,29 @@ public enum AutoLooter {
     public void start(Keyboard keyboard, Automator automator) {
         automator.focusWindow("Legends Of Idleon");
         Rectangle rect = automator.getWindowRect("Legends Of Idleon");
-        int x1 = rect.x + 32;
-        int x2 = rect.x + rect.width - 32;
-        int y = rect.y + 64;
-        int maxY = rect.y + rect.height - 128;
+        Rectangle adjustedRect = adjustRect(rect, 32, 64, -32, -128);
         int increment = 24;
         while (!keyboard.isKeyPressed(1)) {
-            automator.drag(x1, y, x2, y);
-            int oldY = y;
-            y += increment;
-            if (++y>= maxY) y = rect.y + 64;
-            automator.drag(x2, oldY, x1, y);
+            dragOverArea(keyboard, automator, adjustedRect, increment);
         }
     }
 
+    public Rectangle adjustRect(Rectangle rect, int x, int y, int w, int h) {
+        return new Rectangle(
+                rect.x + x,
+                rect.y + y,
+                rect.width + w,
+                rect.height + h
+        );
+    }
+
+    private void dragOverArea(Keyboard keyboard, Automator automator, Rectangle area, int increment) {
+        automator.drag((int)area.getCenterX(), (int)area.getCenterY(), (int)area.getCenterX(), (int)area.getCenterY());
+        for (int i = area.y; (i < (int) area.getMaxY()) && !keyboard.isKeyPressed(1); i += increment) {
+            automator.dragHold(area.x, i, (int)area.getMaxX(), i);
+            automator.dragHold((int)area.getMaxX(), i, area.x, i);
+        }
+    }
 
     public void start(AutoItXData config) {
         Automator autoItX = AutoItXFactory.INSTANCE.create(config);
