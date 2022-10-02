@@ -1,9 +1,9 @@
 package com.caracrazy.idleon;
 
 import com.caracrazy.automation.Automator;
-import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.graphics.ImageExtensions;
 import com.caracrazy.graphics.ImageLoader;
+import com.caracrazy.input.Keyboard;
 import com.caracrazy.logging.Logger;
 import com.caracrazy.logging.LoggerFactory;
 
