@@ -1,9 +1,9 @@
 package com.caracrazy.automation;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.autoit.AutoItXAutomator;
 import com.caracrazy.automation.autoit.AutoItXData;
 import com.caracrazy.automation.autoit.AutoItXFactory;
+import com.caracrazy.automation.autoit.HybridAutomator;
 import com.caracrazy.automation.robot.RobotFactory;
 
 import java.awt.*;
@@ -19,6 +19,6 @@ public class HybridAutomatorFactory {
     public static Automator create(AutoItXData config) {
         Robot robot = RobotFactory.create();
         AutoItX autoItX = AutoItXFactory.INSTANCE.create(config);
-        return new AutoItXAutomator(autoItX, robot);
+        return new HybridAutomator(autoItX, robot);
     }
 }

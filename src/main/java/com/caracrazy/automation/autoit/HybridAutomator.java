@@ -8,12 +8,12 @@ import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
-public class AutoItXAutomator implements Automator {
+public class HybridAutomator implements Automator {
 
     private final AutoItX autoItX;
     private final Robot robot;
 
-    public AutoItXAutomator(AutoItX autoItX, Robot robot) {
+    public HybridAutomator(AutoItX autoItX, Robot robot) {
         this.autoItX = autoItX;
         this.robot = robot;
     }
