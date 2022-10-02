@@ -1,14 +1,15 @@
 package com.caracrazy.idleon;
 
 import com.caracrazy.automation.Automator;
+import com.caracrazy.automation.HybridAutomatorFactory;
 import com.caracrazy.automation.autoit.AutoItXData;
-import com.caracrazy.automation.autoit.AutoItXFactory;
 import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.automation.jnativehook.KeyboardListener;
 
 import java.awt.*;
 
 public enum AutoLooter {
+
     INSTANCE();
 
     public void start(Keyboard keyboard, Automator automator) {
@@ -39,7 +40,7 @@ public enum AutoLooter {
     }
 
     public void start(AutoItXData config) {
-        Automator autoItX = AutoItXFactory.INSTANCE.create(config);
+        Automator autoItX = HybridAutomatorFactory.create(config);
         KeyboardListener.use(keyboard -> start(keyboard, autoItX));
     }
 }
