@@ -1,9 +1,16 @@
 package com.caracrazy.automation;
 
+import com.caracrazy.automation.autoit.AutoItXData;
+import com.caracrazy.automation.hybrid.HybridAutomatorFactory;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public interface Automator {
+
+    static Automator create(AutoItXData data) {
+        return HybridAutomatorFactory.create(data);
+    } 
 
     BufferedImage screenshot(Rectangle area);
 
