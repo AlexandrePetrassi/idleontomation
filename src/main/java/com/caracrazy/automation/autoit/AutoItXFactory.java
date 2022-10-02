@@ -1,8 +1,6 @@
 package com.caracrazy.automation.autoit;
 
 import autoitx4java.AutoItX;
-import com.caracrazy.automation.Automator;
-import com.caracrazy.automation.robot.RobotFactory;
 import com.jacob.com.LibraryLoader;
 
 import java.nio.file.Paths;
@@ -13,7 +11,7 @@ public enum AutoItXFactory {
 
     INSTANCE();
 
-    private final Map<AutoItXData, Automator> cache = new HashMap<>();
+    private final Map<AutoItXData, AutoItX> cache = new HashMap<>();
 
     private String getDllPath(AutoItXData config) {
         return config.getDll().getDirectory();
@@ -41,12 +39,11 @@ public enum AutoItXFactory {
         return new AutoItX();
     }
 
-    private Automator createAutomator(AutoItXData config) {
-        AutoItX autoItX = loadAutoItX(getDllPath(config), getDllName(config));
-        return new AutoItXAutomator(autoItX, RobotFactory.create());
+    private AutoItX createAutomator(AutoItXData config) {
+        return loadAutoItX(getDllPath(config), getDllName(config));
     }
 
-    public Automator create(AutoItXData config) {
+    public AutoItX create(AutoItXData config) {
         return cache.computeIfAbsent(config, this::createAutomator);
     }
 }
