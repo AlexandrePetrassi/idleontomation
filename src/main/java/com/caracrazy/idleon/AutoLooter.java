@@ -2,7 +2,6 @@ package com.caracrazy.idleon;
 
 import com.caracrazy.automation.Automator;
 import com.caracrazy.automation.autoit.AutoItXData;
-import com.caracrazy.automation.hybrid.HybridAutomatorFactory;
 import com.caracrazy.input.Keyboard;
 import com.caracrazy.input.KeyboardListener;
 
@@ -40,7 +39,7 @@ public enum AutoLooter {
     }
 
     public void start(AutoItXData config) {
-        Automator autoItX = HybridAutomatorFactory.create(config);
+        Automator autoItX = Automator.create(config);
         KeyboardListener.use(keyboard -> start(keyboard, autoItX));
     }
 }
