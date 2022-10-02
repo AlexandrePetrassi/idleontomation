@@ -33,9 +33,9 @@ public class App {
 
     private static void chooseStrategy(ConfigurationData config, String strategyName) {
         if (strategyName.equalsIgnoreCase("Chop")) {
-            ChopMiniGameInitializer.initialize(config.getAutoItX(), config.getChopMiniGame());
+            ChopMiniGameInitializer.initialize(config.getAutomator(), config.getChopMiniGame());
         } else if (strategyName.equalsIgnoreCase("Loot")) {
-            AutoLooter.INSTANCE.start(config.getAutoItX());
+            AutoLooter.INSTANCE.start(config.getAutomator());
         }
     }
 }

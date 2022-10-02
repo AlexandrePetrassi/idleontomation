@@ -15,6 +15,7 @@ public class Messages {
     private String errorImageNotSameSize = "em6";
     private String errorImageRead = "em7";
     private String errorImageLoad = "em8";
+    private String errorNoSuitableImplementationFound = "em9";
     private String infoForceExit = "im1";
     private String infoClick = "im2";
 
@@ -60,5 +61,9 @@ public class Messages {
 
     public String getErrorImageLoad() {
         return errorImageLoad;
+    }
+
+    public String getErrorNoSuitableImplementationFound() {
+        return errorNoSuitableImplementationFound;
     }
 }
