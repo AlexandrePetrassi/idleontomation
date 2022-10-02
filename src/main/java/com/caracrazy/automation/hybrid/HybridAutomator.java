@@ -1,4 +1,4 @@
-package com.caracrazy.automation.autoit;
+package com.caracrazy.automation.hybrid;
 
 import autoitx4java.AutoItX;
 import com.caracrazy.automation.Automator;

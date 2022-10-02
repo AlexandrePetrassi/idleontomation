@@ -1,9 +1,9 @@
-package com.caracrazy.automation;
+package com.caracrazy.automation.hybrid;
 
 import autoitx4java.AutoItX;
+import com.caracrazy.automation.Automator;
 import com.caracrazy.automation.autoit.AutoItXData;
 import com.caracrazy.automation.autoit.AutoItXFactory;
-import com.caracrazy.automation.autoit.HybridAutomator;
 import com.caracrazy.automation.robot.RobotFactory;
 
 import java.awt.*;

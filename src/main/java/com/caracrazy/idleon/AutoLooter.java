@@ -1,8 +1,8 @@
 package com.caracrazy.idleon;
 
 import com.caracrazy.automation.Automator;
-import com.caracrazy.automation.HybridAutomatorFactory;
 import com.caracrazy.automation.autoit.AutoItXData;
+import com.caracrazy.automation.hybrid.HybridAutomatorFactory;
 import com.caracrazy.automation.jnativehook.Keyboard;
 import com.caracrazy.automation.jnativehook.KeyboardListener;
 
