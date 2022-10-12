@@ -4,22 +4,35 @@ import com.caracrazy.automation.Automator;
 import com.caracrazy.automation.AutomatorData;
 import com.caracrazy.automation.AutomatorFactory;
 import com.caracrazy.input.Keyboard;
-import com.caracrazy.input.KeyboardListener;
+import com.caracrazy.input.KeyboardEvent;
+import com.caracrazy.input.ManualKeyboardListener;
+import com.caracrazy.logging.Logger;
+import com.caracrazy.logging.LoggerFactory;
 
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public enum AutoLooter {
 
     INSTANCE();
 
-    public void start(Keyboard keyboard, Automator automator) {
+    private static final Logger logger = LoggerFactory.create(AutoLooter.class.getName());
+
+    public void start(ManualKeyboardListener.EventListener keyboard, Automator automator) {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() { @Override public void run() { old(keyboard, automator); } };
+        keyboard.addKeyEventListener(0 , KeyboardEvent.RELEASE, timer::cancel);
+        keyboard.addKeyEventListener(0 , KeyboardEvent.RELEASE, () -> ManualKeyboardListener.stop(keyboard));
+        keyboard.addKeyEventListener(0 , KeyboardEvent.RELEASE, () -> Thread.currentThread().interrupt());
+        timer.schedule(task, 0, 1);
+    }
+    private void old(Keyboard keyboard, Automator automator) {
         automator.focusWindow("Legends Of Idleon");
         Rectangle rect = automator.getWindowRect("Legends Of Idleon");
         Rectangle adjustedRect = adjustRect(rect, 32, 64, -32, -128);
         int increment = 24;
-        while (!keyboard.isKeyPressed(1)) {
-            dragOverArea(keyboard, automator, adjustedRect, increment);
-        }
+        dragOverArea(keyboard, automator, adjustedRect, increment);
     }
 
     public Rectangle adjustRect(Rectangle rect, int x, int y, int w, int h) {
@@ -41,6 +54,8 @@ public enum AutoLooter {
 
     public void start(AutomatorData config) {
         Automator autoItX = AutomatorFactory.create(config);
-        KeyboardListener.use(keyboard -> start(keyboard, autoItX));
+        ManualKeyboardListener.EventListener keyboard = ManualKeyboardListener.create();
+        ManualKeyboardListener.start(keyboard);
+        start(keyboard, autoItX);
     }
 }
