@@ -65,14 +65,19 @@ public class KeyboardListener implements NativeKeyListener {
 
         private final Map<Integer, Boolean> pressedKeys = new HashMap<>();
 
+        private final ObserverMap observers = new ObserverMap();
+
         @Override
         public void nativeKeyPressed(NativeKeyEvent e) {
+            boolean oldValue = pressedKeys.getOrDefault(e.getKeyCode(), false);
             pressedKeys.put(e.getKeyCode(), true);
+            observers.invoke(e.getKeyCode(), oldValue ? KeyboardEvent.HOLD : KeyboardEvent.DOWN);
         }
 
         @Override
         public void nativeKeyReleased(NativeKeyEvent e) {
             pressedKeys.put(e.getKeyCode(), false);
+            observers.invoke(e.getKeyCode(), KeyboardEvent.RELEASE);
         }
 
         @Override
@@ -83,6 +88,16 @@ public class KeyboardListener implements NativeKeyListener {
         @Override
         public boolean isKeyPressed(int keyCode) {
             return pressedKeys.getOrDefault(keyCode, false);
+        }
+
+        @Override
+        public void addKeyEventListener(int keyCode, KeyboardEvent event, Runnable callback) {
+            observers.addEventListener(keyCode, event, callback);
+        }
+
+        @Override
+        public void removeKeyEventListener(int keyCode, KeyboardEvent event, Runnable callback) {
+            observers.removeEventListener(keyCode, event, callback);
         }
     }
 }
