@@ -70,4 +70,9 @@ public class HybridAutomator implements Automator {
                 .parallel()
                 .forEach(i -> robot.mouseMove(x1 + i, y2));
     }
+
+    @Override
+    public boolean matchPixel(int x, int y, int color, int limit) {
+        return autoItX.pixelSearch(x, y, x, y, color, limit, 1).length > 0;
+    }
 }

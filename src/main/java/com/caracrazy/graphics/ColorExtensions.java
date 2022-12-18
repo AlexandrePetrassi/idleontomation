@@ -24,4 +24,8 @@ public class ColorExtensions {
         int b = (colorA.getBlue() + colorB.getBlue()) / 2;
         return new Color(r, g, b);
     }
+
+    public static int[] toIntArray(java.util.List<Color> colorList) {
+        return colorList.stream().mapToInt(Color::getRGB).toArray();
+    }
 }

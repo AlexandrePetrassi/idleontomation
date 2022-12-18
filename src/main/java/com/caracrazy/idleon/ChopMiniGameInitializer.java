@@ -15,6 +15,6 @@ public class ChopMiniGameInitializer {
 
     public static void initialize(AutomatorData autoItXData, ChopMiniGameData chopMiniGameData) {
         Automator autoItX = AutomatorFactory.create(autoItXData);
-        KeyboardListener.use(keyboard -> ChopMiniGame.start(autoItX, keyboard, chopMiniGameData));
+        KeyboardListener.use(keyboard -> NewChopMiniGame.start(autoItX, keyboard, chopMiniGameData));
     }
 }
