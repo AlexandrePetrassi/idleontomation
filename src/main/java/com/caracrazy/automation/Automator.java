@@ -18,4 +18,6 @@ public interface Automator {
     void drag(int x1, int y1, int x2, int y2);
 
     void dragHold(int x1, int y1, int x2, int y2);
+
+    boolean matchPixel(int x, int y, int color, int limit);
 }
