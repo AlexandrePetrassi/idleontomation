@@ -4,6 +4,7 @@ import autoitx4java.AutoItX;
 import com.caracrazy.automation.Automatizador;
 import com.caracrazy.automation.AutomatizadorAutoItX;
 import com.caracrazy.automation.AutomatizadorJna;
+import com.caracrazy.automation.CmdController;
 import com.caracrazy.automation.autoit.AutoItXData;
 import com.caracrazy.automation.autoit.AutoItXFactory;
 import com.caracrazy.configuration.ConfigurationFactory;
@@ -28,8 +29,8 @@ public class AutomatizadorIT {
     @Parameterized.Parameters(name = "{0}")
     public static Collection<Object[]> data() {
         Collection<Object[]> result = new ArrayList<>();
-        //result.add(new Object[]{ createAutoIt() });
-        result.add(new Object[]{ new AutomatizadorJna() });
+        result.add(new Object[]{ createAutoIt(), "Edit1" });
+        result.add(new Object[]{ new AutomatizadorJna(), "Edit" });
         return result;
     }
 
@@ -40,9 +41,11 @@ public class AutomatizadorIT {
     }
 
     private final Automatizador automatizador;
+    private final String controlId;
 
-    public AutomatizadorIT(Automatizador automatizador) {
+    public AutomatizadorIT(Automatizador automatizador, String controlId) {
         this.automatizador = automatizador;
+        this.controlId = controlId;
     }
 
     private static final String notepadTitle =
@@ -56,9 +59,6 @@ public class AutomatizadorIT {
 
     private static final String mspaint =
             "mspaint.exe";
-
-    private static final String controlId =
-            "Edit1";
 
     @Before
     @After
@@ -149,7 +149,7 @@ public class AutomatizadorIT {
         // ENTAO
         assertAll(
                 () -> assertFalse("Antes winWaitActive deveria ser false", antes),
-                () -> assertTrue("Depois winWaitActive deveria ser false", depois)
+                () -> assertTrue("Depois winWaitActive deveria ser true", depois)
         );
     }
 
@@ -187,9 +187,9 @@ public class AutomatizadorIT {
 
         // ENTAO
         assertEquals(
-                "Edit1 deve ter sua posição no exio x exatamente igual a" +
-                "zero, pois este elemento está alinhado com a margem" +
-                "esquerda do notepad.",
+                "O elemento '" + controlId + "' deve ter sua posição" +
+                " no exio x exatamente igual a zero, pois este elemento está" +
+                " alinhado com a margem esquerda do notepad.",
                 0,
                 controlX
         );
@@ -205,9 +205,9 @@ public class AutomatizadorIT {
 
         // ENTAO
         assertEquals(
-                "Edit1 deve ter sua posição no exio y exatamente igual a" +
-                "zero, pois este elemento está alinhado com a margem" +
-                "superior do notepad.",
+                "O elemento '" + controlId + "' deve ter sua posição" +
+                " no exio y exatamente igual a zero, pois este elemento está" +
+                " alinhado com a margem superior do notepad.",
                 0,
                 controlY
         );
@@ -225,10 +225,11 @@ public class AutomatizadorIT {
 
         // ENTAO
         assertEquals(
-                "Edit1 deve se extender em largura do começo da janela" +
-                        " do notepad até a barra de rolagem da direita, ou seja," +
-                        " o Edit1 deve ter exatamente a mesa largura da janela" +
-                        " menos 16 pixels (Que é a largura da barra de rolagem).",
+                "O elemento '" + controlId + "' deve se extender em" +
+                " largura do começo da janela do notepad até a barra de" +
+                " rolagem da direita, ou seja, o elemento '" + controlId +
+                "' deve ter exatamente a mesa largura da janela menos 16" +
+                " pixels (Que é a largura da barra de rolagem).",
                 tamanhoEsperado,
                 tamanhoObtido
         );
@@ -246,9 +247,9 @@ public class AutomatizadorIT {
 
         // ENTAO
         assertEquals(
-                "Edti1 deve ocupar em altura praticamente toda a janela" +
-                        " do notepad, descontando a altura dos menus, barra de" +
-                        " rolagem e barra de status.",
+                "O elemento '" + controlId + "' deve ocupar em altura" +
+                " praticamente toda a janela do notepad, descontando a altura" +
+                " dos menus, barra de rolagem e barra de status.",
                 tamanhoEsperado,
                 tamanhoObtido
         );
@@ -318,7 +319,7 @@ public class AutomatizadorIT {
         Rectangle posicaoAntes = automatizador.getRect(notepadTitle);
         int recuoHorizontal = posicaoAntes.width / 2;
         int recuoVertical = 10;
-        int movimentoHorizontal = 10;
+        int movimentoHorizontal = 50;
         Rectangle posicaoEsperada = new Rectangle(
                 posicaoAntes.x + movimentoHorizontal,
                 posicaoAntes.y,
@@ -336,7 +337,7 @@ public class AutomatizadorIT {
         automatizador.mouseMove(
                 posicaoAntes.x + recuoHorizontal + movimentoHorizontal,
                 posicaoAntes.y + recuoVertical,
-                0
+                10
         );
         automatizador.mouseUp("left");
 
@@ -411,7 +412,7 @@ public class AutomatizadorIT {
     }
 
     @Test
-    public void controlSend_deve_escrever_um_texto_no_notepad_e_controlGetText_deve_retornar_o_texto_escrito() {
+    public void controlSend_deve_escrever_um_texto_no_notepad_e_controlGetText_deve_retornar_o_texto_escrito() throws InterruptedException {
         // DADO
         abrirApp(notepad);
         String textoEsperado = "Texto esperado";

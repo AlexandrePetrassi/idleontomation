@@ -1,4 +1,4 @@
-package com.caracrazy;
+package com.caracrazy.automation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,12 +10,11 @@ import java.util.concurrent.TimeUnit;
 public enum CmdController {
     INSTANCE;
 
-    static private final long EMULATOR_START_TIMEOUT = 1500L;
+    private static final long EMULATOR_START_TIMEOUT = 1500L;
 
-    static private final String SYSTEM_ENV = System.getenv("windir");
+    private static final String SYSTEM_ENV = System.getenv("windir");
 
-
-    void abrirUnicaInstancia(String dir, String app) {
+    public void abrirUnicaInstancia(String dir, String app) {
         try {
             new ProcessBuilder("cmd", "/k", "start /D " + dir + " " + app)
                     .start()
@@ -25,11 +24,21 @@ public enum CmdController {
         }
     }
 
-    long contarProcessos(String regex) {
+    public void fecharInstancia(String dir, String app) {
+        try {
+            new ProcessBuilder("cmd", "/k", "taskkill /T /F /IM " + dir + " " + app)
+                    .start()
+                    .waitFor(EMULATOR_START_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    public long contarProcessos(String regex) {
         return contarProcessos(regex, false);
     }
 
-    long contarProcessos(String nomeProcesso, boolean log) {
+    public long contarProcessos(String nomeProcesso, boolean log) {
         List<String> lista = new ArrayList<>();
         try (BufferedReader input = new BufferedReader(new InputStreamReader(process().getInputStream()))) {
             input.lines().forEach(lista::add);

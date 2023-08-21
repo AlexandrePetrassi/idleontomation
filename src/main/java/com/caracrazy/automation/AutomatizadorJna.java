@@ -1,8 +1,10 @@
 package com.caracrazy.automation;
 
-import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.User32;
+import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinUser;
 
-import java.util.Arrays;
+import java.awt.*;
 
 public class AutomatizadorJna implements Automatizador {
 
@@ -29,15 +31,11 @@ public class AutomatizadorJna implements Automatizador {
 
     @Override
     public void winActivate(String titulo) {
+        WinDef.HWND hWnd = AutomationUtils.findWindowHandlerByRegexpTitle(titulo);
+        if (hWnd == null) return;
         User32 user32 = User32.INSTANCE;
-        WinDef.HWND hwnd = AutomationUtils.findWindowHandlerByRegexpTitle(titulo); //user32.FindWindow(null, titulo);
-
-        if (hwnd != null) {
-            user32.SetForegroundWindow(hwnd);
-            log("Activated window '" + titulo + '.');
-        } else {
-            log("failed to activate window '" + titulo + "'.");
-        }
+        user32.ShowWindow(hWnd, WinUser.SW_SHOW);
+        user32.SetForegroundWindow(hWnd);
     }
 
     @Override
@@ -75,18 +73,23 @@ public class AutomatizadorJna implements Automatizador {
         User32 user32 = User32.INSTANCE;
         WinDef.HWND parentHwnd = AutomationUtils.findWindowHandlerByRegexpTitle(windowName);
 
-        if (parentHwnd != null) {
-            WinDef.HWND controlHwnd = user32.FindWindowEx(parentHwnd, null, elementID, text);
-
-            if (controlHwnd != null) {
-                WinDef.RECT rect = new WinDef.RECT();
-                user32.GetWindowRect(controlHwnd, rect);
-
-                return rect.left; // Left coordinate
-            }
+        if (parentHwnd == null) {
+            log("PARENT HWND NOT FOUND");
+            return -1; // Window or control not found
+        }
+        WinDef.HWND controlHwnd = AutomationUtils.findChildWindowByClassNameAndText(parentHwnd, text, elementID); //user32.GetWindow(parentHwnd, new WinDef.DWORD(GW_CHILD));
+        if (controlHwnd == null) {
+            log("CONTROL HWND NOT FOUND");
+            return -1; // Window or control not found
         }
 
-        return -1; // Window or control not found
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(parentHwnd, rect);
+        int anchor = rect.left;
+        user32.GetWindowRect(controlHwnd, rect);
+
+        return rect.left - anchor - 8; // Left coordinate
+
     }
 
     @Override
@@ -94,123 +97,89 @@ public class AutomatizadorJna implements Automatizador {
         User32 user32 = User32.INSTANCE;
         WinDef.HWND parentHwnd = AutomationUtils.findWindowHandlerByRegexpTitle(windowName);
 
-        if (parentHwnd != null) {
-            WinDef.HWND controlHwnd = user32.FindWindowEx(parentHwnd, null, elementID, text);
-
-            if (controlHwnd != null) {
-                WinDef.RECT rect = new WinDef.RECT();
-                user32.GetWindowRect(controlHwnd, rect);
-
-                return rect.top; // Left coordinate
-            }
+        if (parentHwnd == null) {
+            log("PARENT HWND NOT FOUND");
+            return -1; // Window or control not found
         }
+        WinDef.HWND controlHwnd = AutomationUtils.findChildWindowByClassNameAndText(parentHwnd, text, elementID); //user32.GetWindow(parentHwnd, new WinDef.DWORD(GW_CHILD));
 
-        return -1; // Window or control not found
+        if (controlHwnd == null) {
+            log("CONTROL HWND NOT FOUND");
+            return -1; // Window or control not found
+        }
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(parentHwnd, rect);
+        int anchor = rect.top;
+        user32.GetWindowRect(controlHwnd, rect);
+
+        return rect.top - anchor - 51; // Left coordinate
+
     }
 
     @Override
     public int controlGetPosWidth(String windowName, String text, String elementID) {
         User32 user32 = User32.INSTANCE;
-        WinDef.HWND parentHwnd = AutomationUtils.findWindowHandlerByRegexpTitle(windowName);
 
-        if (parentHwnd != null) {
-            WinDef.HWND controlHwnd = user32.FindWindowEx(parentHwnd, null, elementID, text);
+        WinDef.HWND controlHwnd =  AutomationUtils.findControl(windowName, text, elementID);
 
-            if (controlHwnd != null) {
-                WinDef.RECT rect = new WinDef.RECT();
-                user32.GetWindowRect(controlHwnd, rect);
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(controlHwnd, rect);
 
-                return rect.right - rect.left; // Left coordinate
-            }
-        }
-
-        return -1; // Window or control not found
+        return rect.right - rect.left;
     }
 
     @Override
     public int controlGetPosHeight(String windowName, String text, String elementID) {
         User32 user32 = User32.INSTANCE;
-        WinDef.HWND parentHwnd = AutomationUtils.findWindowHandlerByRegexpTitle(windowName);
 
-        if (parentHwnd != null) {
-            WinDef.HWND controlHwnd = user32.FindWindowEx(parentHwnd, null, elementID, text);
+        WinDef.HWND controlHwnd =  AutomationUtils.findControl(windowName, text, elementID);
 
-            if (controlHwnd != null) {
-                WinDef.RECT rect = new WinDef.RECT();
-                user32.GetWindowRect(controlHwnd, rect);
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(controlHwnd, rect);
 
-                return rect.bottom - rect.top; // Left coordinate
-            }
-        }
-
-        return -1; // Window or control not found
+        return rect.bottom - rect.top;
     }
 
     @Override
     public int processExists(String appName) {
-        Kernel32 kernel32 = Kernel32.INSTANCE;
-        Tlhelp32.PROCESSENTRY32 pe32 = new Tlhelp32.PROCESSENTRY32();
-
-        WinNT.HANDLE snapshot = kernel32.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new WinDef.DWORD(0));
-
-        if (kernel32.Process32First(snapshot, pe32)) {
-            do {
-                String currentProcessName = Arrays.toString(pe32.szExeFile).trim();
-                if (currentProcessName.equalsIgnoreCase(appName)) {
-                    kernel32.CloseHandle(snapshot);
-                    int result = pe32.th32ProcessID.intValue();
-                    log("Pid is: " + result);
-                    return result;
-                }
-            } while (kernel32.Process32Next(snapshot, pe32));
-        }
-
-        kernel32.CloseHandle(snapshot);
-        log("Pid is: 0");
-        return 0; // Process not found
+        AutomationUtils.WindowInfo windowInfo = AutomationUtils.findWindowByExecutable(appName);
+        return windowInfo == null ? 0 : windowInfo.getPid();
     }
 
     @Override
     public void processClose(String appName) {
-        int processId = processExists(appName);
-
-        if (processId != -1) {
-            Kernel32 kernel32 = Kernel32.INSTANCE;
-            WinNT.HANDLE processHandle = kernel32.OpenProcess(1, false, processId);
-
-            if (processHandle != null) {
-                kernel32.TerminateProcess(processHandle, 0);
-                kernel32.CloseHandle(processHandle);
-            }
-        }
-
-        log("Process '" + appName + "' not found or unable to close");
+        CmdController.INSTANCE.fecharInstancia(appName, "");
     }
 
     @Override
     public boolean mouseMove(int x, int y, int speed) {
         User32Ext user32 = User32Ext.INSTANCE;
 
-        if (speed <= 0) {
+        if (speed == 0) {
+            user32.SetCursorPos(x, y);
+            return true;
+        }
+        if (speed < 0) {
             speed = 1;
         }
 
+        long sleepTime = 15L;
+
         int steps = Math.abs(speed);
 
-        int startX = user32.GetSystemMetrics(User32Ext.SM_CXSCREEN);
-        int startY = user32.GetSystemMetrics(User32Ext.SM_CYSCREEN);
+        Point start = MouseInfo.getPointerInfo().getLocation();
 
-        double deltaX = (double) (x - startX) / steps;
-        double deltaY = (double) (y - startY) / steps;
+        double deltaX = (double) (x - start.x) / steps;
+        double deltaY = (double) (y - start.y) / steps;
 
         for (int i = 0; i < steps; i++) {
-            int newX = (int) (startX + deltaX * (i + 1));
-            int newY = (int) (startY + deltaY * (i + 1));
+            int newX = (int) (start.x + deltaX * (i + 1));
+            int newY = (int) (start.y + deltaY * (i + 1));
 
             user32.SetCursorPos(newX, newY);
 
             try {
-                Thread.sleep(15); // Adjust sleep time if needed
+                Thread.sleep(sleepTime); // Adjust sleep time if needed
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -279,7 +248,7 @@ public class AutomatizadorJna implements Automatizador {
     public void mouseClickDrag(String button, int x, int y, int x2, int y2) {
         mouseMove(x, y, 0);
         mouseDown(button);
-        mouseMove(x2, y2, 0);
+        mouseMove(x2, y2, 10);
         mouseUp(button);
     }
 
@@ -290,56 +259,42 @@ public class AutomatizadorJna implements Automatizador {
         int WM_LBUTTONDOWN = 0x0201;
         int WM_LBUTTONUP = 0x0202;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND controlHWnd = AutomationUtils.findControl(title, text, controlId);
 
-        if (hWnd != null) {
-            WinDef.HWND controlHWnd = user32.FindWindowEx(hWnd, null, null, controlId);
+        if (controlHWnd == null) {
+            return false; // Window or control not found
+        }
+        user32.SetForegroundWindow(controlHWnd);
 
-            if (controlHWnd != null) {
-                user32.SetForegroundWindow(controlHWnd);
-
-                int wParam = 0;
-                int lParam = (y << 16) | x;
-                if ("right".equalsIgnoreCase(button)) {
-                    wParam |= 0x0008;
-                }
-                for (int i = 0; i < clicks; i++) {
-                    user32.SendMessage(controlHWnd, WM_LBUTTONDOWN, new WinDef.WPARAM(wParam), new WinDef.LPARAM(lParam));
-                    user32.SendMessage(controlHWnd, WM_LBUTTONUP, new WinDef.WPARAM(wParam), new WinDef.LPARAM(lParam));
-                }
-
-                return true;
-            }
+        int wParam = 0;
+        int lParam = (y << 16) | x;
+        if ("right".equalsIgnoreCase(button)) wParam |=  0x0008;
+        for (int i = 0; i < clicks; i++) {
+            user32.SendMessage(controlHWnd, WM_LBUTTONDOWN, new WinDef.WPARAM(wParam), new WinDef.LPARAM(lParam));
+            user32.SendMessage(controlHWnd, WM_LBUTTONUP, new WinDef.WPARAM(wParam), new WinDef.LPARAM(lParam));
         }
 
-        return false; // Window or control not found
+        return true;
+
     }
 
     @Override
     public boolean controlClick(String title, String text, String controlId) {
         User32Ext user32 = User32Ext.INSTANCE;
-
         int BM_CLICK = 0xF5;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND controlHWnd = AutomationUtils.findControl(title, text,controlId);
+        if (controlHWnd == null) return false;
+        user32.SendMessage(controlHWnd, BM_CLICK, new WinDef.WPARAM(0), new WinDef.LPARAM(0));
+        return true;
 
-        if (hWnd != null) {
-            WinDef.HWND controlHWnd = user32.FindWindowEx(hWnd, null, null, controlId);
-
-            if (controlHWnd != null) {
-                user32.SendMessage(controlHWnd, BM_CLICK, new WinDef.WPARAM(0), new WinDef.LPARAM(0));
-                return true;
-            }
-        }
-
-        return false; // Window or control not found
     }
 
     @Override
     public boolean winWaitActive(String title) {
         User32Ext user32 = User32Ext.INSTANCE;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND hWnd = AutomationUtils.findWindowHandlerByRegexpTitle(title);
 
         if (hWnd != null) {
             user32.SetForegroundWindow(hWnd);
@@ -364,24 +319,22 @@ public class AutomatizadorJna implements Automatizador {
         return false; // Window not found
     }
 
+    public static boolean checkForeground(WinDef.HWND hwnd) {
+        WinDef.HWND foreground = User32.INSTANCE.GetForegroundWindow();
+        return foreground != null && foreground.equals(hwnd);
+    }
+
     @Override
     public boolean winWaitActive(String title, String text, int timeout) {
-        User32 user32 = User32.INSTANCE;
-
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND hWnd = AutomationUtils.findWindowHandlerByRegexpTitle(title);
 
         if (hWnd == null) {
-            log("dont : " + title);
             return false; // Window not found
         }
 
-        log("PRINT");
-
-        user32.SetForegroundWindow(hWnd);
-
         long endTime = System.currentTimeMillis() + timeout;
 
-        while (!user32.GetForegroundWindow().equals(hWnd)) {
+        while (!checkForeground(hWnd)) {
             if (System.currentTimeMillis() > endTime) {
                 return false; // Timeout reached
             }
@@ -401,94 +354,77 @@ public class AutomatizadorJna implements Automatizador {
     public boolean controlSend(String title, String text, String control, String keys, boolean isRaw) {
         User32Ext user32 = User32Ext.INSTANCE;
 
-        int WM_CHAR = 0x0102;
+        WinDef.HWND controlHWnd = AutomationUtils.findControl(title, text, control);
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        if (controlHWnd == null) return false; // Window or control not found
 
-        if (hWnd != null) {
-            WinDef.HWND controlHWnd = user32.FindWindowEx(hWnd, null, null, control);
+        user32.SetForegroundWindow(controlHWnd);
 
-            if (controlHWnd != null)
-                user32.SetForegroundWindow(controlHWnd);
-
-            byte[] keysBytes = keys.getBytes();
-            for (byte keyByte : keysBytes) {
-                user32.SendMessage(controlHWnd, WM_CHAR, new WinDef.WPARAM(keyByte), new WinDef.LPARAM(0));
-            }
-
-            return true;
+        char[] keysBuffer = keys.toCharArray();
+        for (char key : keysBuffer) {
+            user32.SendMessage(controlHWnd, WinUser.WM_CHAR, new WinDef.WPARAM(key), new WinDef.LPARAM(1));
         }
 
-        return false; // Window or control not found
+        return true;
     }
 
     @Override
     public String controlGetText(String title, String text, String controlId) {
         User32Ext user32 = User32Ext.INSTANCE;
+        int WM_GETTEXT = 0x000D;
+        int WM_GETTEXTLENGTH = 0x000E;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND controlHWnd = AutomationUtils.findControl(title, text, controlId);
 
-        if (hWnd != null) {
-            WinDef.HWND controlHWnd = user32.FindWindowEx(hWnd, null, null, controlId);
+        if (controlHWnd == null) return ""; // Window or control not found
 
-            if (controlHWnd != null) {
-                int maxLength = 1024; // Adjust the maximum length as needed
-                char[] buffer = new char[maxLength];
+        int textLength = user32.SendMessage(controlHWnd, WM_GETTEXTLENGTH, new WinDef.WPARAM(0), new WinDef.LPARAM(0)).intValue();
 
-                int length = user32.GetWindowText(controlHWnd, buffer, maxLength);
+        if (textLength <= 0) return "";
 
-                if (length > 0) {
-                    return new String(buffer, 0, length);
-                }
-            }
-        }
+        char[] textBuffer = new char[textLength];
+        user32.SendMessage(controlHWnd, WM_GETTEXT, new WinDef.WPARAM(textLength + 1), textBuffer);
 
-        return ""; // Window or control not found
+        return new String(textBuffer);
     }
 
     @Override
     public int mouseGetPosX() {
-        User32Ext user32 = User32Ext.INSTANCE;
-
-        return user32.GetSystemMetrics(User32.SM_CXSCREEN);
+        return MouseInfo.getPointerInfo().getLocation().x;
     }
 
     @Override
     public int mouseGetPosY() {
-        User32Ext user32 = User32Ext.INSTANCE;
-
-        return user32.GetSystemMetrics(User32.SM_CYSCREEN);
+        return MouseInfo.getPointerInfo().getLocation().y;
     }
 
     @Override
     public int winGetPosWidth(String title) {
         User32Ext user32 = User32Ext.INSTANCE;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND hWnd = AutomationUtils.findWindowHandlerByRegexpTitle(title); // user32.FindWindow(null, title);
 
-        if (hWnd != null) {
-            WinDef.RECT rect = new WinDef.RECT();
-            user32.GetWindowRect(hWnd, rect);
+        if (hWnd == null) return 0; // Window not found
 
-            return rect.right - rect.left;
-        }
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(hWnd, rect);
 
-        return 0; // Window not found
+        return rect.right - rect.left;
+
     }
 
     @Override
     public int winGetPosHeight(String title) {
         User32Ext user32 = User32Ext.INSTANCE;
 
-        WinDef.HWND hWnd = user32.FindWindow(null, title);
+        WinDef.HWND hWnd = AutomationUtils.findWindowHandlerByRegexpTitle(title); // user32.FindWindow(null, title);
 
-        if (hWnd != null) {
-            WinDef.RECT rect = new WinDef.RECT();
-            user32.GetWindowRect(hWnd, rect);
+        if (hWnd == null) return 0; // Window not found
 
-            return rect.bottom - rect.top;
-        }
+        WinDef.RECT rect = new WinDef.RECT();
+        user32.GetWindowRect(hWnd, rect);
 
-        return 0; // Window not found
+        return rect.bottom - rect.top;
+
     }
 }

@@ -9,4 +9,5 @@ public interface User32Ext extends User32 {
 
     boolean SetCursorPos(int X, int Y);
     void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
+    LRESULT SendMessage(HWND hWnd, int msg, WPARAM wParam, char[] lParam);
 }
